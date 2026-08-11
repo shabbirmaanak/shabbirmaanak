@@ -123,14 +123,14 @@ export default function TabAbout({ data }) {
         }
 
         .about-text-section {
-          margin-bottom: 35px;
+          margin-bottom: 28px;
         }
 
         .about-lead-quote {
           font-size: var(--fs-4);
           font-weight: var(--fw-600);
           color: var(--gold-primary);
-          margin-bottom: 14px;
+          margin-bottom: 12px;
           line-height: 1.5;
           letter-spacing: -0.01em;
         }
@@ -140,7 +140,7 @@ export default function TabAbout({ data }) {
           font-size: var(--fs-6);
           font-weight: var(--fw-300);
           line-height: 1.7;
-          margin-bottom: 15px;
+          margin-bottom: 14px;
         }
 
         .text-gold {
@@ -154,29 +154,30 @@ export default function TabAbout({ data }) {
         }
 
         .service-section, .highlights-section, .ethos-section {
-          margin-bottom: 35px;
+          margin-bottom: 28px;
         }
 
         .service-heading {
-          margin-bottom: 20px;
+          margin-bottom: 16px;
         }
 
+        /* Mobile-first: single column */
         .service-list {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 20px;
+          gap: 16px;
         }
 
         .service-item {
           position: relative;
           background: var(--border-gradient-onyx);
-          padding: 22px;
-          border-radius: 16px;
+          padding: 18px;
+          border-radius: 14px;
           box-shadow: var(--shadow-2);
           z-index: 1;
           display: flex;
           align-items: flex-start;
-          gap: 18px;
+          gap: 14px;
           transition: transform var(--transition-1), border-color var(--transition-1);
           border: 1px solid rgba(255, 255, 255, 0.05);
         }
@@ -197,13 +198,14 @@ export default function TabAbout({ data }) {
         }
 
         .service-icon-box {
-          margin-top: 4px;
+          margin-top: 2px;
           color: var(--ruby-glow);
           flex-shrink: 0;
         }
 
         .service-content-box {
           flex: 1;
+          min-width: 0;
         }
 
         .service-item-title {
@@ -216,50 +218,51 @@ export default function TabAbout({ data }) {
           font-size: var(--fs-8);
           font-style: italic;
           color: var(--vegas-gold);
-          margin-bottom: 8px;
+          margin-bottom: 6px;
         }
 
         .service-item-text {
           color: var(--light-gray-70);
-          font-size: var(--fs-6);
+          font-size: var(--fs-7);
           font-weight: var(--fw-300);
           line-height: 1.6;
         }
 
+        /* Mobile: 2-col highlights always */
         .highlights-grid {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 16px;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
         }
 
         .highlight-card {
-          padding: 18px;
+          padding: 14px;
         }
 
         .highlight-label {
-          font-size: var(--fs-8);
+          font-size: 10px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
           color: var(--ruby-glow);
           font-weight: var(--fw-600);
           display: block;
-          margin-bottom: 4px;
+          margin-bottom: 3px;
         }
 
         .highlight-val {
           font-size: var(--fs-3);
           font-weight: var(--fw-700);
-          margin-bottom: 4px;
+          margin-bottom: 3px;
         }
 
         .highlight-sub {
-          font-size: var(--fs-7);
+          font-size: 11px;
           color: var(--light-gray-70);
           line-height: 1.4;
         }
 
         .ethos-card {
-          padding: 26px 24px;
+          padding: 20px 18px;
           text-align: center;
         }
 
@@ -267,7 +270,7 @@ export default function TabAbout({ data }) {
           color: var(--ruby-glow);
           display: flex;
           justify-content: center;
-          margin-bottom: 12px;
+          margin-bottom: 10px;
         }
 
         .ethos-quote {
@@ -275,22 +278,23 @@ export default function TabAbout({ data }) {
           font-weight: var(--fw-600);
           color: var(--white-2);
           line-height: 1.45;
-          margin-bottom: 10px;
+          margin-bottom: 8px;
         }
 
         .ethos-subtext {
           font-size: var(--fs-6);
           color: var(--vegas-gold);
-          margin-bottom: 22px;
+          margin-bottom: 18px;
         }
 
+        /* Mobile: principles as 1-col stacked list */
         .ethos-principles-row {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
+          grid-template-columns: 1fr;
+          gap: 12px;
           text-align: left;
           border-top: 1px solid var(--jet);
-          padding-top: 20px;
+          padding-top: 16px;
         }
 
         .ethos-principle-box {
@@ -309,7 +313,7 @@ export default function TabAbout({ data }) {
           font-size: var(--fs-7);
           color: var(--white-2);
           font-weight: var(--fw-600);
-          margin-bottom: 4px;
+          margin-bottom: 3px;
         }
 
         .ethos-principle-box p {
@@ -318,18 +322,30 @@ export default function TabAbout({ data }) {
           line-height: 1.45;
         }
 
-        @media (min-width: 768px) {
+        /* Tablet+ */
+        @media (min-width: 640px) {
           .service-list {
             grid-template-columns: 1fr 1fr;
           }
+          .ethos-principles-row {
+            grid-template-columns: repeat(3, 1fr);
+          }
         }
 
-        @media (max-width: 600px) {
-          .highlights-grid {
-            grid-template-columns: 1fr;
+        /* Desktop+ */
+        @media (min-width: 1024px) {
+          .service-list {
+            grid-template-columns: 1fr 1fr;
           }
-          .ethos-principles-row {
-            grid-template-columns: 1fr;
+          .highlights-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+          }
+          .highlight-card {
+            padding: 18px;
+          }
+          .ethos-card {
+            padding: 26px 24px;
           }
         }
       `}</style>

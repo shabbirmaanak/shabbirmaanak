@@ -162,34 +162,35 @@ export default function ResumeModal({ data, isOpen, onClose }) {
           -webkit-backdrop-filter: blur(14px);
           z-index: 2000;
           display: flex;
-          align-items: center;
+          align-items: flex-end;
           justify-content: center;
-          padding: 1.5rem;
+          padding: 0;
           animation: fadeIn 0.2s ease;
         }
 
         .resume-modal-dialog {
           width: 100%;
           max-width: 900px;
-          height: 92vh;
+          height: 94vh;
           background: #0f121a;
           border: 1px solid hsla(43, 96%, 64%, 0.3);
-          border-radius: 20px;
+          border-radius: 20px 20px 0 0;
           display: flex;
           flex-direction: column;
-          box-shadow: var(--shadow-5), 0 0 40px hsla(348, 83%, 52%, 0.15);
+          box-shadow: 0 -10px 60px rgba(0, 0, 0, 0.85), 0 0 40px hsla(348, 83%, 52%, 0.1);
           overflow: hidden;
         }
 
         .resume-bar-header {
-          padding: 1rem 1.75rem;
+          padding: 0.85rem 1rem;
           background: #080a10;
           border-bottom: 1px solid var(--jet);
           display: flex;
           align-items: center;
           justify-content: space-between;
           flex-wrap: wrap;
-          gap: 1rem;
+          gap: 0.75rem;
+          flex-shrink: 0;
         }
 
         .resume-bar-title {

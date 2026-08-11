@@ -8,7 +8,7 @@ export default function Sidebar({ data, onOpenResume }) {
 
   return (
     <aside className="vcard-sidebar-col">
-      <div className={`sidebar ${isOpen ? 'active' : ''}`}>
+      <div className={`sidebar ${isOpen ? 'sidebar-active' : ''}`}>
         {/* Profile Info Header */}
         <div className="sidebar-info">
           <figure className="avatar-box">
@@ -26,7 +26,6 @@ export default function Sidebar({ data, onOpenResume }) {
             <h1 className="name" title={personalInfo.name}>
               {personalInfo.name}
             </h1>
-
             <p className="title">{personalInfo.role}</p>
             <p className="sub-title">{personalInfo.organization}</p>
           </div>
@@ -37,22 +36,20 @@ export default function Sidebar({ data, onOpenResume }) {
             className="info_more-btn"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? 'Hide Contacts' : 'Show Contacts'}
+            aria-expanded={isOpen}
           >
             <span>{isOpen ? 'Hide Contacts' : 'Show Contacts'}</span>
-            {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
         </div>
 
-        {/* Extended Contacts & Socials */}
-        <div className="sidebar-info_more">
+        {/* Extended Contacts & Socials — collapsible on mobile, always visible on desktop */}
+        <div className={`sidebar-info_more ${isOpen ? 'sidebar-info_more-open' : ''}`}>
           <div className="separator" />
 
           <ul className="contacts-list">
-            {/* Email */}
             <li className="contact-item">
-              <div className="icon-box">
-                <Mail size={16} />
-              </div>
+              <div className="icon-box"><Mail size={15} /></div>
               <div className="contact-info">
                 <p className="contact-title">Email</p>
                 <a href={`mailto:${personalInfo.email}`} className="contact-link" title={personalInfo.email}>
@@ -61,11 +58,8 @@ export default function Sidebar({ data, onOpenResume }) {
               </div>
             </li>
 
-            {/* Phone */}
             <li className="contact-item">
-              <div className="icon-box">
-                <Phone size={16} />
-              </div>
+              <div className="icon-box"><Phone size={15} /></div>
               <div className="contact-info">
                 <p className="contact-title">Phone</p>
                 <a href={`tel:${personalInfo.phone ? personalInfo.phone.replace(/\s+/g, '') : ''}`} className="contact-link">
@@ -74,22 +68,16 @@ export default function Sidebar({ data, onOpenResume }) {
               </div>
             </li>
 
-            {/* Experience Since */}
             <li className="contact-item">
-              <div className="icon-box">
-                <Calendar size={16} />
-              </div>
+              <div className="icon-box"><Calendar size={15} /></div>
               <div className="contact-info">
                 <p className="contact-title">Experience</p>
                 <span className="contact-link">Since {personalInfo.experienceSince} (5+ Yrs)</span>
               </div>
             </li>
 
-            {/* Department */}
             <li className="contact-item">
-              <div className="icon-box">
-                <Building size={16} />
-              </div>
+              <div className="icon-box"><Building size={15} /></div>
               <div className="contact-info">
                 <p className="contact-title">Department</p>
                 <span className="contact-link contact-wrap-text">
@@ -98,11 +86,8 @@ export default function Sidebar({ data, onOpenResume }) {
               </div>
             </li>
 
-            {/* Location */}
             <li className="contact-item">
-              <div className="icon-box">
-                <MapPin size={16} />
-              </div>
+              <div className="icon-box"><MapPin size={15} /></div>
               <div className="contact-info">
                 <p className="contact-title">Location</p>
                 <address className="contact-link contact-wrap-text">{personalInfo.location}</address>
@@ -144,14 +129,14 @@ export default function Sidebar({ data, onOpenResume }) {
             )}
           </ul>
 
-          {/* Resume Download Action */}
+          {/* Resume Download */}
           <div className="sidebar-resume-action">
             <button 
               type="button" 
               onClick={onOpenResume} 
               className="sidebar-cv-btn"
             >
-              <FileText size={15} />
+              <FileText size={14} />
               <span>Download CV (PDF)</span>
             </button>
           </div>
@@ -159,33 +144,35 @@ export default function Sidebar({ data, onOpenResume }) {
       </div>
 
       <style>{`
+        /* ---- Sidebar Card ---- */
         .sidebar {
-          transition: var(--transition-2);
           overflow: hidden;
+          transition: var(--transition-2);
         }
 
+        /* ---- Profile Row ---- */
         .sidebar-info {
           position: relative;
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 14px;
         }
 
+        /* ---- Avatar Jewel Frame ---- */
         .avatar-box {
           background: linear-gradient(135deg, hsla(43, 96%, 64%, 0.5) 0%, hsla(348, 83%, 52%, 0.4) 100%);
-          border-radius: 20px;
+          border-radius: 18px;
           padding: 3px;
-          box-shadow: var(--shadow-1), 0 0 16px hsla(43, 96%, 64%, 0.2);
+          box-shadow: var(--shadow-1), 0 0 14px hsla(43, 96%, 64%, 0.18);
           flex-shrink: 0;
         }
 
         .avatar-img-wrap {
-          width: 98px;
-          height: 75px;
-          border-radius: 17px;
+          width: 82px;
+          height: 63px;
+          border-radius: 15px;
           overflow: hidden;
-          background: #dfe3ea;
-          background-image: linear-gradient(135deg, #edf0f5 0%, #dfe3ea 100%);
+          background: linear-gradient(135deg, #edf0f5 0%, #dfe3ea 100%);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -201,9 +188,10 @@ export default function Sidebar({ data, onOpenResume }) {
         }
 
         .avatar-box:hover .avatar-logo-img {
-          transform: scale(1.05);
+          transform: scale(1.04);
         }
 
+        /* ---- Name / Role / Org ---- */
         .info-content {
           flex: 1;
           min-width: 0;
@@ -211,10 +199,10 @@ export default function Sidebar({ data, onOpenResume }) {
 
         .info-content .name {
           color: var(--white-2);
-          font-size: var(--fs-3);
+          font-size: clamp(15px, 3.5vw, 18px);
           font-weight: var(--fw-600);
           letter-spacing: -0.2px;
-          margin-bottom: 6px;
+          margin-bottom: 5px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -224,35 +212,46 @@ export default function Sidebar({ data, onOpenResume }) {
           color: var(--gold-primary);
           background: hsla(43, 96%, 64%, 0.08);
           border: 1px solid hsla(43, 96%, 64%, 0.2);
-          font-size: var(--fs-8);
+          font-size: 11px;
           font-weight: var(--fw-500);
           width: max-content;
-          padding: 3px 12px;
-          border-radius: 8px;
-          margin-bottom: 4px;
+          max-width: 100%;
+          padding: 2px 10px;
+          border-radius: 7px;
+          margin-bottom: 3px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .info-content .sub-title {
-          font-size: 11px;
+          font-size: 10.5px;
           color: var(--ruby-glow);
           font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
+        /* ---- Mobile Toggle Button ---- */
         .info_more-btn {
           position: absolute;
           top: -4px;
           right: -4px;
-          border-radius: 0 16px;
-          font-size: var(--fs-7);
+          border-radius: 0 16px 0 10px;
+          font-size: 11px;
           color: var(--gold-primary);
           background: var(--border-gradient-onyx);
-          padding: 8px 12px;
-          display: none;
+          padding: 7px 10px;
+          display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 5px;
           box-shadow: var(--shadow-2);
           transition: var(--transition-1);
-          z-index: 1;
+          border: 1px solid hsla(43, 96%, 64%, 0.2);
+          white-space: nowrap;
+          /* Touch target minimum 44×44 */
+          min-height: 36px;
         }
 
         .info_more-btn::before {
@@ -261,25 +260,38 @@ export default function Sidebar({ data, onOpenResume }) {
           inset: 1px;
           border-radius: inherit;
           background: var(--bg-gradient-jet);
-          transition: var(--transition-1);
           z-index: -1;
         }
 
+        /* ---- Collapsible Panel ---- */
+        .sidebar-info_more {
+          max-height: 0;
+          overflow: hidden;
+          visibility: hidden;
+          transition: max-height 0.45s ease, visibility 0s linear 0.45s;
+        }
+
+        .sidebar-info_more-open {
+          max-height: 800px;
+          visibility: visible;
+          transition: max-height 0.45s ease, visibility 0s linear 0s;
+        }
+
+        /* ---- Contacts List ---- */
         .contacts-list {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 14px;
         }
 
         .contact-item {
           display: flex;
           align-items: flex-start;
-          gap: 14px;
+          gap: 12px;
         }
 
         .contact-item .icon-box {
           margin-top: 2px;
-          flex-shrink: 0;
         }
 
         .contact-info {
@@ -289,19 +301,19 @@ export default function Sidebar({ data, onOpenResume }) {
 
         .contact-title {
           color: var(--light-gray-70);
-          font-size: var(--fs-8);
+          font-size: 10.5px;
           text-transform: uppercase;
-          margin-bottom: 3px;
+          margin-bottom: 2px;
           letter-spacing: 0.3px;
         }
 
         .contact-link {
           color: var(--white-2);
-          font-size: var(--fs-7);
+          font-size: 12.5px;
           font-weight: var(--fw-400);
           display: block;
           font-style: normal;
-          line-height: 1.45;
+          line-height: 1.4;
         }
 
         .contact-link.contact-wrap-text {
@@ -319,18 +331,26 @@ export default function Sidebar({ data, onOpenResume }) {
           color: var(--gold-primary);
         }
 
+        /* ---- Social Icons ---- */
         .social-list {
           display: flex;
           justify-content: center;
           align-items: center;
-          gap: 15px;
-          padding-bottom: 4px;
+          gap: 14px;
+          padding-bottom: 2px;
         }
 
         .social-link {
           color: var(--light-gray-70);
           font-size: 18px;
           transition: var(--transition-1);
+          /* Bigger touch target */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
         }
 
         .social-link:hover {
@@ -338,8 +358,9 @@ export default function Sidebar({ data, onOpenResume }) {
           transform: translateY(-2px);
         }
 
+        /* ---- Download CV ---- */
         .sidebar-resume-action {
-          margin-top: 18px;
+          margin-top: 16px;
         }
 
         .sidebar-cv-btn {
@@ -347,7 +368,7 @@ export default function Sidebar({ data, onOpenResume }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
+          gap: 7px;
           padding: 10px 14px;
           border-radius: 12px;
           background: linear-gradient(135deg, hsla(43, 96%, 64%, 0.12) 0%, hsla(348, 83%, 52%, 0.12) 100%);
@@ -357,6 +378,7 @@ export default function Sidebar({ data, onOpenResume }) {
           font-weight: 600;
           transition: var(--transition-1);
           box-shadow: var(--shadow-1);
+          min-height: 44px;
         }
 
         .sidebar-cv-btn:hover {
@@ -366,17 +388,20 @@ export default function Sidebar({ data, onOpenResume }) {
           transform: translateY(-2px);
         }
 
-        /* Desktop Sidebar View */
+        /* ===========================
+           DESKTOP SIDEBAR LAYOUT
+           =========================== */
         @media (min-width: 1024px) {
           .sidebar-info {
             flex-direction: column;
             text-align: center;
+            gap: 0;
           }
 
           .avatar-box {
             padding: 3.5px;
             border-radius: 22px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
           }
 
           .avatar-img-wrap {
@@ -388,41 +413,28 @@ export default function Sidebar({ data, onOpenResume }) {
           .info-content .name {
             font-size: var(--fs-2);
             white-space: normal;
+            text-align: center;
           }
 
           .info-content .title {
-            margin: 0 auto 6px auto;
+            margin: 0 auto 5px auto;
           }
 
-          .sidebar-info_more {
-            opacity: 1;
-            visibility: visible;
-          }
-        }
-
-        /* Mobile & Tablet Toggle */
-        @media (max-width: 1023px) {
-          .sidebar {
-            max-height: 120px;
+          .info-content .sub-title {
+            font-size: 11px;
+            white-space: normal;
           }
 
-          .sidebar.active {
-            max-height: 600px;
-          }
-
+          /* Always show contacts on desktop */
           .info_more-btn {
-            display: flex;
+            display: none;
           }
 
           .sidebar-info_more {
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition-2);
-          }
-
-          .sidebar.active .sidebar-info_more {
-            opacity: 1;
+            max-height: none;
+            overflow: visible;
             visibility: visible;
+            transition: none;
           }
         }
       `}</style>

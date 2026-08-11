@@ -125,8 +125,8 @@ export default function TabResume({ data, onOpenResume }) {
           align-items: flex-start;
           justify-content: space-between;
           flex-wrap: wrap;
-          gap: 15px;
-          margin-bottom: 25px;
+          gap: 12px;
+          margin-bottom: 20px;
         }
 
         .vcard-btn-primary {
@@ -164,7 +164,7 @@ export default function TabResume({ data, onOpenResume }) {
 
         .timeline-list {
           font-size: var(--fs-6);
-          margin-left: 45px;
+          margin-left: 36px;
         }
 
         .timeline-item {
@@ -237,8 +237,8 @@ export default function TabResume({ data, onOpenResume }) {
         .timeline-pillars-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 14px;
-          margin-top: 15px;
+          gap: 12px;
+          margin-top: 12px;
         }
 
         .timeline-pillar-card {
@@ -349,9 +349,18 @@ export default function TabResume({ data, onOpenResume }) {
           box-shadow: 0 0 10px hsla(348, 83%, 52%, 0.3);
         }
 
-        @media (min-width: 768px) {
+        @media (min-width: 640px) {
           .timeline-pillars-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
+          }
+          .timeline-list {
+            margin-left: 45px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .timeline-pillars-grid {
+            grid-template-columns: 1fr 1fr 1fr;
           }
         }
       `}</style>

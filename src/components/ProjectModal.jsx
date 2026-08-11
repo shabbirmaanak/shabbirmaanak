@@ -144,34 +144,37 @@ export default function ProjectModal({ project, onClose }) {
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(4, 5, 8, 0.85);
+          background: rgba(4, 5, 8, 0.88);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
           z-index: 2000;
           display: flex;
-          align-items: center;
+          align-items: flex-end; /* bottom-sheet on mobile */
           justify-content: center;
-          padding: 1.5rem;
+          padding: 0;
           animation: fadeIn 0.25s ease;
         }
 
         .project-modal-dialog {
           width: 100%;
           max-width: 860px;
-          max-height: 90vh;
+          /* Full height on mobile, 90vh on desktop */
+          max-height: 92vh;
           background: #0d1017;
           border: 1px solid var(--border-gold);
-          border-radius: var(--radius-xl);
+          /* Rounded top corners only on mobile */
+          border-radius: 20px 20px 0 0;
           display: flex;
           flex-direction: column;
-          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), var(--gold-glow);
+          box-shadow: 0 -10px 60px rgba(0, 0, 0, 0.85), var(--gold-glow);
           overflow: hidden;
         }
 
         .modal-banner {
           position: relative;
-          padding: 2.75rem 2.25rem 2rem 2.25rem;
+          padding: 1.75rem 1.25rem 1.25rem 1.25rem;
           border-bottom: 1px solid var(--border-subtle);
+          flex-shrink: 0;
         }
 
         .modal-banner-content {
@@ -234,11 +237,13 @@ export default function ProjectModal({ project, onClose }) {
         }
 
         .modal-body {
-          padding: 2rem 2.25rem;
+          padding: 1.25rem;
           overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
           display: flex;
           flex-direction: column;
-          gap: 1.75rem;
+          gap: 1rem;
+          flex: 1;
         }
 
         .modal-impact-banner {
@@ -281,8 +286,8 @@ export default function ProjectModal({ project, onClose }) {
 
         .modal-sections-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1.25rem;
+          grid-template-columns: 1fr;
+          gap: 0.85rem;
         }
 
         .modal-section-card {
@@ -293,7 +298,7 @@ export default function ProjectModal({ project, onClose }) {
         }
 
         .modal-section-card.full-width {
-          grid-column: span 2;
+          grid-column: span 1;
         }
 
         .section-card-title {
@@ -342,12 +347,15 @@ export default function ProjectModal({ project, onClose }) {
         }
 
         .modal-footer {
-          padding: 1.25rem 2.25rem;
+          padding: 0.9rem 1.25rem;
           border-top: 1px solid var(--border-subtle);
           background: rgba(10, 12, 17, 0.95);
           display: flex;
           align-items: center;
           justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 10px;
+          flex-shrink: 0;
         }
 
         .modal-footer-meta {
@@ -355,21 +363,30 @@ export default function ProjectModal({ project, onClose }) {
           color: var(--text-muted);
         }
 
-        @media (max-width: 768px) {
-          .modal-banner {
-            padding: 2rem 1.5rem 1.5rem 1.5rem;
-          }
-          .modal-body {
+        @media (min-width: 640px) {
+          .project-modal-backdrop {
+            align-items: center;
             padding: 1.5rem;
           }
+          .project-modal-dialog {
+            border-radius: 20px;
+            max-height: 90vh;
+          }
+          .modal-banner {
+            padding: 2.25rem 2rem 1.75rem 2rem;
+          }
+          .modal-body {
+            padding: 1.75rem 2rem;
+            gap: 1.5rem;
+          }
           .modal-sections-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
           }
           .modal-section-card.full-width {
-            grid-column: span 1;
+            grid-column: span 2;
           }
           .modal-footer {
-            padding: 1rem 1.5rem;
+            padding: 1.1rem 2rem;
           }
         }
       `}</style>
