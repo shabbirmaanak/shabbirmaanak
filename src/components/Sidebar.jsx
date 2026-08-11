@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Mail, Phone, Calendar, MapPin, Building, ChevronDown, ChevronUp, Linkedin, Instagram, Github, FileText } from 'lucide-react';
+import {
+  Mail, Phone, Calendar, MapPin, Building,
+  ChevronDown, ChevronUp, Linkedin, Instagram, Github, FileText
+} from 'lucide-react';
 import logoImg from '../assets/logo.jpg';
 
 export default function Sidebar({ data, onOpenResume }) {
@@ -8,429 +11,396 @@ export default function Sidebar({ data, onOpenResume }) {
 
   return (
     <aside className="vcard-sidebar-col">
-      <div className={`sidebar ${isOpen ? 'sidebar-active' : ''}`}>
-        {/* Profile Info Header */}
-        <div className="sidebar-info">
-          <figure className="avatar-box">
-            <div className="avatar-img-wrap">
-              <img 
-                src={logoImg} 
-                alt="Shabbir Maanak Emblem" 
-                className="avatar-logo-img"
+      <div className="sidebar">
+
+        {/* ── Top Profile Block ── */}
+        <div className="sb-profile">
+          {/* Avatar */}
+          <div className="sb-avatar-ring">
+            <div className="sb-avatar-wrap">
+              <img
+                src={logoImg}
+                alt="Shabbir Maanak monogram"
+                className="sb-avatar-img"
                 loading="eager"
               />
             </div>
-          </figure>
-
-          <div className="info-content">
-            <h1 className="name" title={personalInfo.name}>
-              {personalInfo.name}
-            </h1>
-            <p className="title">{personalInfo.role}</p>
-            <p className="sub-title">{personalInfo.organization}</p>
           </div>
 
-          {/* Mobile Accordion Toggle */}
-          <button 
-            type="button"
-            className="info_more-btn"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label={isOpen ? 'Hide Contacts' : 'Show Contacts'}
-            aria-expanded={isOpen}
-          >
-            <span>{isOpen ? 'Hide Contacts' : 'Show Contacts'}</span>
-            {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          </button>
+          {/* Identity text */}
+          <div className="sb-identity">
+            <h1 className="sb-name">{personalInfo.name}</h1>
+            <span className="sb-role-badge">{personalInfo.role}</span>
+            <p className="sb-org">{personalInfo.organization}</p>
+          </div>
         </div>
 
-        {/* Extended Contacts & Socials — collapsible on mobile, always visible on desktop */}
-        <div className={`sidebar-info_more ${isOpen ? 'sidebar-info_more-open' : ''}`}>
+        {/* ── Mobile "Show Contacts" Toggle ── placed BELOW the profile row ── */}
+        <button
+          type="button"
+          className="sb-toggle-btn"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
+        >
+          <span>{isOpen ? 'Hide Contacts' : 'Show Contacts'}</span>
+          {isOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+        </button>
+
+        {/* ── Collapsible Contacts Panel ── */}
+        <div className={`sb-panel ${isOpen ? 'sb-panel-open' : ''}`}>
           <div className="separator" />
 
-          <ul className="contacts-list">
-            <li className="contact-item">
-              <div className="icon-box"><Mail size={15} /></div>
-              <div className="contact-info">
-                <p className="contact-title">Email</p>
-                <a href={`mailto:${personalInfo.email}`} className="contact-link" title={personalInfo.email}>
-                  {personalInfo.email}
-                </a>
-              </div>
-            </li>
-
-            <li className="contact-item">
-              <div className="icon-box"><Phone size={15} /></div>
-              <div className="contact-info">
-                <p className="contact-title">Phone</p>
-                <a href={`tel:${personalInfo.phone ? personalInfo.phone.replace(/\s+/g, '') : ''}`} className="contact-link">
-                  {personalInfo.phone}
-                </a>
-              </div>
-            </li>
-
-            <li className="contact-item">
-              <div className="icon-box"><Calendar size={15} /></div>
-              <div className="contact-info">
-                <p className="contact-title">Experience</p>
-                <span className="contact-link">Since {personalInfo.experienceSince} (5+ Yrs)</span>
-              </div>
-            </li>
-
-            <li className="contact-item">
-              <div className="icon-box"><Building size={15} /></div>
-              <div className="contact-info">
-                <p className="contact-title">Department</p>
-                <span className="contact-link contact-wrap-text">
-                  {personalInfo.department}
-                </span>
-              </div>
-            </li>
-
-            <li className="contact-item">
-              <div className="icon-box"><MapPin size={15} /></div>
-              <div className="contact-info">
-                <p className="contact-title">Location</p>
-                <address className="contact-link contact-wrap-text">{personalInfo.location}</address>
-              </div>
-            </li>
+          <ul className="sb-contacts">
+            {[
+              { icon: <Mail size={14} />, label: 'Email', value: personalInfo.email, href: `mailto:${personalInfo.email}`, truncate: true },
+              { icon: <Phone size={14} />, label: 'Phone', value: personalInfo.phone, href: `tel:${(personalInfo.phone||'').replace(/\s+/g,'')}`, truncate: true },
+              { icon: <Calendar size={14} />, label: 'Experience', value: `Since ${personalInfo.experienceSince} (5+ Yrs)`, truncate: false },
+              { icon: <Building size={14} />, label: 'Department', value: personalInfo.department, truncate: false },
+              { icon: <MapPin size={14} />, label: 'Location', value: personalInfo.location, truncate: false },
+            ].map(({ icon, label, value, href, truncate }) => (
+              <li key={label} className="sb-contact-item">
+                <div className="sb-icon-box">{icon}</div>
+                <div className="sb-contact-text">
+                  <p className="sb-contact-label">{label}</p>
+                  {href ? (
+                    <a href={href} className={`sb-contact-val ${truncate ? 'truncate' : ''}`}>{value}</a>
+                  ) : (
+                    <span className={`sb-contact-val ${truncate ? 'truncate' : ''}`}>{value}</span>
+                  )}
+                </div>
+              </li>
+            ))}
           </ul>
 
           <div className="separator" />
 
-          {/* Social Links */}
-          <ul className="social-list">
+          {/* Social icons */}
+          <ul className="sb-socials">
             {personalInfo.linkedin && (
-              <li className="social-item">
-                <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="social-link" title="LinkedIn">
-                  <Linkedin size={17} />
-                </a>
-              </li>
+              <li><a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="sb-social-link" title="LinkedIn"><Linkedin size={16} /></a></li>
             )}
             {personalInfo.instagram && (
-              <li className="social-item">
-                <a href={personalInfo.instagram} target="_blank" rel="noreferrer" className="social-link" title="Instagram">
-                  <Instagram size={17} />
-                </a>
-              </li>
+              <li><a href={personalInfo.instagram} target="_blank" rel="noreferrer" className="sb-social-link" title="Instagram"><Instagram size={16} /></a></li>
             )}
             {personalInfo.github && (
-              <li className="social-item">
-                <a href={personalInfo.github} target="_blank" rel="noreferrer" className="social-link" title="GitHub">
-                  <Github size={17} />
-                </a>
-              </li>
+              <li><a href={personalInfo.github} target="_blank" rel="noreferrer" className="sb-social-link" title="GitHub"><Github size={16} /></a></li>
             )}
             {personalInfo.email && (
-              <li className="social-item">
-                <a href={`mailto:${personalInfo.email}`} className="social-link" title="Send Email">
-                  <Mail size={17} />
-                </a>
-              </li>
+              <li><a href={`mailto:${personalInfo.email}`} className="sb-social-link" title="Email"><Mail size={16} /></a></li>
             )}
           </ul>
 
-          {/* Resume Download */}
-          <div className="sidebar-resume-action">
-            <button 
-              type="button" 
-              onClick={onOpenResume} 
-              className="sidebar-cv-btn"
-            >
-              <FileText size={14} />
-              <span>Download CV (PDF)</span>
-            </button>
-          </div>
+          {/* CV Button */}
+          <button type="button" onClick={onOpenResume} className="sb-cv-btn">
+            <FileText size={13} />
+            <span>Download CV / Resume</span>
+          </button>
         </div>
       </div>
 
       <style>{`
-        /* ---- Sidebar Card ---- */
+        /* ─── Sidebar Card ─── */
         .sidebar {
           overflow: hidden;
-          transition: var(--transition-2);
         }
 
-        /* ---- Profile Row ---- */
-        .sidebar-info {
-          position: relative;
+        /* ─── Profile Row ─── */
+        .sb-profile {
           display: flex;
           align-items: center;
-          gap: 14px;
+          gap: 12px;
+          padding-bottom: 14px;
         }
 
-        /* ---- Avatar Jewel Frame ---- */
-        .avatar-box {
-          background: linear-gradient(135deg, hsla(43, 96%, 64%, 0.5) 0%, hsla(348, 83%, 52%, 0.4) 100%);
-          border-radius: 18px;
-          padding: 3px;
-          box-shadow: var(--shadow-1), 0 0 14px hsla(43, 96%, 64%, 0.18);
+        /* ─── Avatar ring ─── */
+        .sb-avatar-ring {
           flex-shrink: 0;
+          padding: 2.5px;
+          border-radius: 16px;
+          background: conic-gradient(
+            from 0deg,
+            hsl(43, 96%, 64%) 0deg,
+            hsl(348, 83%, 52%) 120deg,
+            hsl(320, 75%, 42%) 240deg,
+            hsl(43, 96%, 64%) 360deg
+          );
+          box-shadow: 0 0 18px hsla(43, 96%, 64%, 0.25), 0 0 40px hsla(348, 70%, 40%, 0.15);
+          animation: ring-spin 8s linear infinite;
         }
 
-        .avatar-img-wrap {
-          width: 82px;
-          height: 63px;
-          border-radius: 15px;
+        @keyframes ring-spin {
+          from { filter: hue-rotate(0deg); }
+          to   { filter: hue-rotate(30deg); }
+        }
+
+        .sb-avatar-wrap {
+          width: 78px;
+          height: 60px;
+          border-radius: 14px;
           overflow: hidden;
           background: linear-gradient(135deg, #edf0f5 0%, #dfe3ea 100%);
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.08);
         }
 
-        .avatar-logo-img {
+        .sb-avatar-img {
           width: 100%;
           height: 100%;
           object-fit: contain;
           display: block;
-          transition: transform 0.3s ease;
         }
 
-        .avatar-box:hover .avatar-logo-img {
-          transform: scale(1.04);
-        }
-
-        /* ---- Name / Role / Org ---- */
-        .info-content {
+        /* ─── Name / Role / Org ─── */
+        .sb-identity {
           flex: 1;
           min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
         }
 
-        .info-content .name {
-          color: var(--white-2);
-          font-size: clamp(15px, 3.5vw, 18px);
-          font-weight: var(--fw-600);
-          letter-spacing: -0.2px;
-          margin-bottom: 5px;
+        .sb-name {
+          font-size: clamp(15px, 3.8vw, 18px);
+          font-weight: 700;
+          color: hsl(330, 30%, 96%);
+          letter-spacing: -0.02em;
+          line-height: 1.2;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
-        .info-content .title {
-          color: var(--gold-primary);
-          background: hsla(43, 96%, 64%, 0.08);
-          border: 1px solid hsla(43, 96%, 64%, 0.2);
+        .sb-role-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 3px 10px;
+          border-radius: 20px;
           font-size: 11px;
-          font-weight: var(--fw-500);
-          width: max-content;
+          font-weight: 600;
+          letter-spacing: 0.01em;
+          background: linear-gradient(135deg, hsla(43, 96%, 64%, 0.18) 0%, hsla(348, 83%, 52%, 0.15) 100%);
+          border: 1px solid hsla(43, 96%, 64%, 0.35);
+          color: hsl(43, 96%, 68%);
+          width: fit-content;
           max-width: 100%;
-          padding: 2px 10px;
-          border-radius: 7px;
-          margin-bottom: 3px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
-        .info-content .sub-title {
-          font-size: 10.5px;
-          color: var(--ruby-glow);
+        .sb-org {
+          font-size: 11px;
+          color: var(--ruby-300);
           font-weight: 500;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
-        /* ---- Mobile Toggle Button ---- */
-        .info_more-btn {
-          position: absolute;
-          top: -4px;
-          right: -4px;
-          border-radius: 0 16px 0 10px;
-          font-size: 11px;
-          color: var(--gold-primary);
-          background: var(--border-gradient-onyx);
-          padding: 7px 10px;
+        /* ─── Mobile Toggle ─── */
+        .sb-toggle-btn {
+          width: 100%;
           display: flex;
           align-items: center;
-          gap: 5px;
-          box-shadow: var(--shadow-2);
-          transition: var(--transition-1);
-          border: 1px solid hsla(43, 96%, 64%, 0.2);
-          white-space: nowrap;
-          /* Touch target minimum 44×44 */
-          min-height: 36px;
+          justify-content: center;
+          gap: 6px;
+          padding: 9px 16px;
+          border-radius: 10px;
+          background: linear-gradient(135deg, hsla(348, 60%, 28%, 0.4) 0%, hsla(330, 40%, 18%, 0.4) 100%);
+          border: 1px solid hsla(348, 60%, 40%, 0.4);
+          color: hsl(43, 90%, 65%);
+          font-size: 12px;
+          font-weight: 600;
+          transition: var(--ease-1);
+          letter-spacing: 0.02em;
+          min-height: 40px;
         }
 
-        .info_more-btn::before {
-          content: "";
-          position: absolute;
-          inset: 1px;
-          border-radius: inherit;
-          background: var(--bg-gradient-jet);
-          z-index: -1;
+        .sb-toggle-btn:hover {
+          background: linear-gradient(135deg, hsla(348, 60%, 32%, 0.5) 0%, hsla(330, 40%, 22%, 0.5) 100%);
+          border-color: hsla(43, 96%, 64%, 0.5);
         }
 
-        /* ---- Collapsible Panel ---- */
-        .sidebar-info_more {
+        /* ─── Collapsible Panel ─── */
+        .sb-panel {
           max-height: 0;
           overflow: hidden;
           visibility: hidden;
-          transition: max-height 0.45s ease, visibility 0s linear 0.45s;
+          transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.4s;
         }
 
-        .sidebar-info_more-open {
-          max-height: 800px;
+        .sb-panel-open {
+          max-height: 900px;
           visibility: visible;
-          transition: max-height 0.45s ease, visibility 0s linear 0s;
+          transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1), visibility 0s;
         }
 
-        /* ---- Contacts List ---- */
-        .contacts-list {
+        /* ─── Contacts ─── */
+        .sb-contacts {
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 13px;
         }
 
-        .contact-item {
+        .sb-contact-item {
           display: flex;
           align-items: flex-start;
-          gap: 12px;
+          gap: 10px;
         }
 
-        .contact-item .icon-box {
-          margin-top: 2px;
+        .sb-icon-box {
+          flex-shrink: 0;
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: linear-gradient(135deg, hsla(348, 70%, 30%, 0.35) 0%, hsla(344, 50%, 18%, 0.7) 100%);
+          border: 1px solid hsla(348, 60%, 40%, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--gold-400);
+          margin-top: 1px;
         }
 
-        .contact-info {
+        .sb-contact-text {
           flex: 1;
           min-width: 0;
         }
 
-        .contact-title {
-          color: var(--light-gray-70);
-          font-size: 10.5px;
+        .sb-contact-label {
+          font-size: 10px;
+          font-weight: 600;
           text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: hsla(330, 15%, 60%, 0.7);
           margin-bottom: 2px;
-          letter-spacing: 0.3px;
         }
 
-        .contact-link {
-          color: var(--white-2);
+        .sb-contact-val {
           font-size: 12.5px;
-          font-weight: var(--fw-400);
+          color: hsl(330, 25%, 90%);
+          font-weight: 400;
           display: block;
           font-style: normal;
           line-height: 1.4;
-        }
-
-        .contact-link.contact-wrap-text {
           white-space: normal;
           word-break: break-word;
+          transition: color var(--ease-1);
         }
 
-        .contact-link:not(.contact-wrap-text) {
+        .sb-contact-val.truncate {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
-        .contact-link:hover {
-          color: var(--gold-primary);
-        }
+        a.sb-contact-val:hover { color: var(--gold-300); }
 
-        /* ---- Social Icons ---- */
-        .social-list {
+        /* ─── Socials ─── */
+        .sb-socials {
           display: flex;
           justify-content: center;
-          align-items: center;
-          gap: 14px;
-          padding-bottom: 2px;
+          gap: 8px;
+          flex-wrap: wrap;
         }
 
-        .social-link {
-          color: var(--light-gray-70);
-          font-size: 18px;
-          transition: var(--transition-1);
-          /* Bigger touch target */
+        .sb-social-link {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 36px;
-          height: 36px;
+          width: 38px;
+          height: 38px;
           border-radius: 50%;
+          background: linear-gradient(135deg, hsla(348, 60%, 25%, 0.3) 0%, hsla(330, 30%, 15%, 0.5) 100%);
+          border: 1px solid hsla(348, 50%, 40%, 0.3);
+          color: hsla(330, 20%, 70%, 0.75);
+          transition: var(--ease-1);
         }
 
-        .social-link:hover {
-          color: var(--gold-primary);
+        .sb-social-link:hover {
+          color: var(--gold-300);
+          border-color: hsla(43, 96%, 64%, 0.5);
+          background: linear-gradient(135deg, hsla(43, 80%, 40%, 0.18) 0%, hsla(348, 70%, 35%, 0.2) 100%);
           transform: translateY(-2px);
+          box-shadow: 0 4px 16px hsla(43, 96%, 64%, 0.2);
         }
 
-        /* ---- Download CV ---- */
-        .sidebar-resume-action {
-          margin-top: 16px;
-        }
-
-        .sidebar-cv-btn {
+        /* ─── CV Button ─── */
+        .sb-cv-btn {
+          margin-top: 12px;
           width: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 7px;
-          padding: 10px 14px;
+          gap: 8px;
+          padding: 11px 16px;
           border-radius: 12px;
-          background: linear-gradient(135deg, hsla(43, 96%, 64%, 0.12) 0%, hsla(348, 83%, 52%, 0.12) 100%);
-          border: 1px solid hsla(43, 96%, 64%, 0.35);
-          color: var(--gold-primary);
+          background: linear-gradient(135deg, hsla(348, 70%, 38%, 0.25) 0%, hsla(330, 50%, 25%, 0.2) 100%);
+          border: 1px solid hsla(348, 70%, 45%, 0.5);
+          color: hsl(348, 90%, 72%);
           font-size: 13px;
           font-weight: 600;
-          transition: var(--transition-1);
-          box-shadow: var(--shadow-1);
+          letter-spacing: 0.01em;
+          transition: var(--ease-1);
           min-height: 44px;
         }
 
-        .sidebar-cv-btn:hover {
-          background: linear-gradient(135deg, hsla(43, 96%, 64%, 0.22) 0%, hsla(348, 83%, 52%, 0.22) 100%);
-          border-color: var(--gold-primary);
-          box-shadow: var(--shadow-gold-glow);
-          transform: translateY(-2px);
+        .sb-cv-btn:hover {
+          background: linear-gradient(135deg, hsla(348, 70%, 45%, 0.35) 0%, hsla(43, 80%, 40%, 0.2) 100%);
+          border-color: var(--ruby-300);
+          color: hsl(330, 30%, 96%);
+          box-shadow: var(--shadow-ruby);
+          transform: translateY(-1px);
         }
 
-        /* ===========================
-           DESKTOP SIDEBAR LAYOUT
-           =========================== */
+        /* ═══════════════════════════════
+           DESKTOP OVERRIDES
+           ═══════════════════════════════ */
         @media (min-width: 1024px) {
-          .sidebar-info {
+          .sb-profile {
             flex-direction: column;
+            align-items: center;
             text-align: center;
-            gap: 0;
+            gap: 14px;
+            padding-bottom: 0;
           }
 
-          .avatar-box {
-            padding: 3.5px;
-            border-radius: 22px;
-            margin-bottom: 12px;
+          .sb-avatar-ring {
+            padding: 3px;
+            border-radius: 20px;
           }
 
-          .avatar-img-wrap {
-            width: 145px;
-            height: 111px;
-            border-radius: 19px;
+          .sb-avatar-wrap {
+            width: 140px;
+            height: 107px;
+            border-radius: 17px;
           }
 
-          .info-content .name {
-            font-size: var(--fs-2);
+          .sb-identity {
+            align-items: center;
+          }
+
+          .sb-name {
+            font-size: 20px;
             white-space: normal;
             text-align: center;
           }
 
-          .info-content .title {
-            margin: 0 auto 5px auto;
+          .sb-role-badge {
+            text-align: center;
           }
 
-          .info-content .sub-title {
-            font-size: 11px;
+          .sb-org {
             white-space: normal;
+            text-align: center;
+            font-size: 11.5px;
           }
 
-          /* Always show contacts on desktop */
-          .info_more-btn {
-            display: none;
-          }
+          /* Hide toggle on desktop, always show panel */
+          .sb-toggle-btn { display: none; }
 
-          .sidebar-info_more {
+          .sb-panel {
             max-height: none;
             overflow: visible;
             visibility: visible;

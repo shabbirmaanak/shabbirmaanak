@@ -1,60 +1,48 @@
 import React from 'react';
-import { BookOpen, Briefcase, GraduationCap, FileText, CheckCircle2, Download } from 'lucide-react';
+import { Briefcase, GraduationCap, CheckCircle2, Download } from 'lucide-react';
 
 export default function TabResume({ data, onOpenResume }) {
   const experience = data?.experience || {};
   const education = data?.education || [];
   const skills = data?.skills || [];
-
   const topSkills = skills.slice(0, 6);
 
   return (
     <article className="resume-tab tab-content-active">
       <header className="resume-tab-header">
         <h2 className="h2 article-title">Resume</h2>
-
-        <div className="resume-quick-actions">
-          <button 
-            type="button" 
-            onClick={onOpenResume} 
-            className="vcard-btn-primary"
-          >
-            <Download size={15} />
-            <span>Download CV</span>
-          </button>
-        </div>
+        <button type="button" onClick={onOpenResume} className="btn-download-cv">
+          <Download size={14} />
+          <span>Download CV</span>
+        </button>
       </header>
 
-      {/* Experience Timeline Section */}
-      <section className="timeline-section">
-        <div className="title-wrapper">
-          <div className="icon-box">
-            <Briefcase size={18} />
-          </div>
+      {/* Experience */}
+      <section className="tl-section">
+        <div className="tl-section-head">
+          <div className="tl-head-icon"><Briefcase size={16} /></div>
           <h3 className="h3">Experience</h3>
         </div>
 
-        <ol className="timeline-list">
-          <li className="timeline-item">
-            <h4 className="h4 timeline-item-title">
-              {experience.role} <span className="timeline-org">— {experience.organization}</span>
+        <ol className="tl-list">
+          <li className="tl-item">
+            <div className="tl-dot" />
+            <h4 className="tl-title">
+              {experience.role}
+              <span className="tl-org"> — {experience.organization}</span>
             </h4>
-            <div className="timeline-dept">{experience.department}</div>
-            <span className="timeline-period">{experience.period}</span>
+            <div className="tl-dept">{experience.department}</div>
+            <span className="tl-period">{experience.period}</span>
+            <p className="tl-desc">{experience.description}</p>
 
-            <p className="timeline-text">
-              {experience.description}
-            </p>
-
-            {/* 3 Pillars Breakdown */}
-            <div className="timeline-pillars-grid">
+            <div className="pillars-grid">
               {(experience.pillars || []).map((pillar) => (
-                <div key={pillar.title} className="timeline-pillar-card">
+                <div key={pillar.title} className="pillar-card">
                   <h5 className="pillar-title">{pillar.title}</h5>
                   <ul className="pillar-bullets">
                     {(pillar.responsibilities || []).map((resp, idx) => (
                       <li key={idx}>
-                        <CheckCircle2 size={13} className="bullet-icon" />
+                        <CheckCircle2 size={12} className="bullet-icon" />
                         <span>{resp}</span>
                       </li>
                     ))}
@@ -66,27 +54,25 @@ export default function TabResume({ data, onOpenResume }) {
         </ol>
       </section>
 
-      {/* Education Timeline Section */}
-      <section className="timeline-section">
-        <div className="title-wrapper">
-          <div className="icon-box">
-            <GraduationCap size={18} />
-          </div>
+      {/* Education */}
+      <section className="tl-section">
+        <div className="tl-section-head">
+          <div className="tl-head-icon"><GraduationCap size={16} /></div>
           <h3 className="h3">Education</h3>
         </div>
 
-        <ol className="timeline-list">
+        <ol className="tl-list">
           {education.map((edu, idx) => (
-            <li key={idx} className="timeline-item">
-              <h4 className="h4 timeline-item-title">{edu.degree}</h4>
-              <div className="timeline-dept">{edu.institution} • {edu.location}</div>
-              <span className="timeline-period">{edu.period}</span>
-              <p className="timeline-text">{edu.description}</p>
-
-              <div className="edu-bullets-list">
+            <li key={idx} className="tl-item">
+              <div className="tl-dot" />
+              <h4 className="tl-title">{edu.degree}</h4>
+              <div className="tl-dept">{edu.institution} • {edu.location}</div>
+              <span className="tl-period">{edu.period}</span>
+              <p className="tl-desc">{edu.description}</p>
+              <div className="edu-bullets">
                 {(edu.highlights || []).map((h, hIdx) => (
                   <div key={hIdx} className="edu-bullet-item">
-                    <span className="edu-dot" />
+                    <span className="edu-dot-sm" />
                     <span>{h}</span>
                   </div>
                 ))}
@@ -96,272 +82,275 @@ export default function TabResume({ data, onOpenResume }) {
         </ol>
       </section>
 
-      {/* Skills Progress Section */}
+      {/* Skills Progress */}
       <section className="skill-section">
-        <h3 className="h3 skills-title">Key Proficiencies</h3>
-
-        <ul className="skills-list content-card">
+        <h3 className="h3 skills-heading">Key Proficiencies</h3>
+        <div className="skills-card">
           {topSkills.map((skill) => (
-            <li key={skill.name} className="skills-item">
-              <div className="title-wrapper">
-                <h5 className="h5">{skill.name}</h5>
-                <data value={skill.level} className="skill-num">{skill.level}%</data>
+            <div key={skill.name} className="skill-item">
+              <div className="skill-meta">
+                <h5 className="skill-name">{skill.name}</h5>
+                <span className="skill-pct">{skill.level}%</span>
               </div>
-
-              <div className="skill-progress-bg">
-                <div 
-                  className="skill-progress-fill" 
-                  style={{ width: `${skill.level}%` }}
-                />
+              <div className="skill-bar-bg">
+                <div className="skill-bar-fill" style={{ width: `${skill.level}%` }} />
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
 
       <style>{`
+        .resume-tab { display: block; }
+
         .resume-tab-header {
           display: flex;
           align-items: flex-start;
           justify-content: space-between;
           flex-wrap: wrap;
           gap: 12px;
-          margin-bottom: 20px;
+          margin-bottom: 8px;
         }
 
-        .vcard-btn-primary {
+        .btn-download-cv {
           display: inline-flex;
           align-items: center;
           gap: 6px;
           padding: 8px 16px;
-          border-radius: 12px;
-          background: linear-gradient(135deg, hsla(43, 96%, 64%, 0.15) 0%, hsla(348, 83%, 52%, 0.15) 100%);
-          border: 1px solid hsla(43, 96%, 64%, 0.4);
-          color: var(--gold-primary);
-          font-size: var(--fs-7);
-          font-weight: var(--fw-600);
-          transition: var(--transition-1);
-          box-shadow: var(--shadow-1);
+          border-radius: 10px;
+          background: linear-gradient(135deg, hsla(348, 70%, 38%, 0.25) 0%, hsla(330, 50%, 20%, 0.2) 100%);
+          border: 1px solid hsla(348, 70%, 45%, 0.5);
+          color: hsl(348, 90%, 72%);
+          font-size: 12.5px;
+          font-weight: 600;
+          transition: var(--ease-1);
+          min-height: 36px;
+          margin-top: 6px;
         }
 
-        .vcard-btn-primary:hover {
-          background: linear-gradient(135deg, hsla(43, 96%, 64%, 0.25) 0%, hsla(348, 83%, 52%, 0.25) 100%);
-          border-color: var(--gold-primary);
-          box-shadow: var(--shadow-gold-glow);
-          transform: translateY(-2px);
+        .btn-download-cv:hover {
+          background: linear-gradient(135deg, hsla(348, 70%, 45%, 0.35) 0%, hsla(43, 80%, 40%, 0.2) 100%);
+          box-shadow: var(--shadow-ruby);
+          transform: translateY(-1px);
         }
 
-        .timeline-section {
-          margin-bottom: 35px;
-        }
+        /* ── Timeline ── */
+        .tl-section { margin-bottom: 28px; }
 
-        .timeline-section .title-wrapper {
+        .tl-section-head {
           display: flex;
           align-items: center;
-          gap: 15px;
-          margin-bottom: 25px;
+          gap: 12px;
+          margin-bottom: 20px;
         }
 
-        .timeline-list {
-          font-size: var(--fs-6);
-          margin-left: 36px;
+        .tl-head-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 9px;
+          background: linear-gradient(135deg, hsla(348, 70%, 30%, 0.35) 0%, hsla(344, 50%, 18%, 0.7) 100%);
+          border: 1px solid hsla(348, 60%, 40%, 0.35);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: hsl(43, 96%, 65%);
+          flex-shrink: 0;
         }
 
-        .timeline-item {
+        .tl-list {
+          padding-left: 32px;
+          border-left: 2px solid hsla(348, 50%, 35%, 0.35);
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+
+        .tl-item {
           position: relative;
         }
 
-        .timeline-item:not(:last-child) {
-          margin-bottom: 30px;
+        .tl-dot {
+          position: absolute;
+          left: -40px;
+          top: 4px;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, hsl(43, 96%, 64%), hsl(348, 83%, 52%));
+          box-shadow: 0 0 12px hsla(348, 83%, 52%, 0.6), 0 0 0 3px hsla(348, 60%, 30%, 0.3);
         }
 
-        .timeline-item-title {
-          font-size: var(--fs-4);
-          line-height: 1.3;
+        .tl-title {
+          font-size: clamp(13px, 2.6vw, 15px);
+          font-weight: 600;
+          color: hsl(330, 30%, 94%);
+          line-height: 1.35;
           margin-bottom: 4px;
-          color: var(--white-2);
         }
 
-        .timeline-org {
-          color: var(--gold-primary);
-          font-weight: var(--fw-500);
+        .tl-org {
+          color: hsl(43, 90%, 64%);
+          font-weight: 500;
+          font-size: 0.9em;
         }
 
-        .timeline-dept {
-          font-size: var(--fs-7);
-          color: var(--light-gray);
+        .tl-dept {
+          font-size: 12px;
+          color: hsla(330, 15%, 72%, 0.8);
           margin-bottom: 6px;
         }
 
-        .timeline-period {
-          color: var(--ruby-glow);
-          font-weight: var(--fw-500);
-          font-size: var(--fs-7);
+        .tl-period {
           display: inline-block;
-          margin-bottom: 12px;
-          background: var(--ruby-subtle);
-          padding: 2px 8px;
-          border-radius: 6px;
-          border: 1px solid hsla(348, 83%, 52%, 0.2);
+          font-size: 11.5px;
+          font-weight: 600;
+          color: hsl(348, 85%, 68%);
+          background: linear-gradient(135deg, hsla(348, 70%, 30%, 0.25) 0%, hsla(344, 50%, 18%, 0.3) 100%);
+          padding: 2px 10px;
+          border-radius: 20px;
+          border: 1px solid hsla(348, 60%, 40%, 0.35);
+          margin-bottom: 10px;
         }
 
-        .timeline-text {
-          color: var(--light-gray-70);
-          font-weight: var(--fw-300);
-          line-height: 1.6;
-          margin-bottom: 16px;
+        .tl-desc {
+          font-size: 13px;
+          color: hsla(330, 15%, 78%, 0.75);
+          line-height: 1.65;
+          margin-bottom: 14px;
+          font-weight: 300;
         }
 
-        .timeline-item:not(:last-child)::before {
-          content: "";
-          position: absolute;
-          top: -25px;
-          left: -30px;
-          width: 1px;
-          height: calc(100% + 50px);
-          background: var(--jet);
-        }
-
-        .timeline-item::after {
-          content: "";
-          position: absolute;
-          top: 5px;
-          left: -34px;
-          height: 10px;
-          width: 10px;
-          background: linear-gradient(135deg, var(--gold-primary), var(--ruby-primary));
-          border-radius: 50%;
-          box-shadow: 0 0 0 4px var(--jet), 0 0 10px hsla(348, 83%, 52%, 0.5);
-        }
-
-        .timeline-pillars-grid {
+        /* ── Pillars ── */
+        .pillars-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 12px;
-          margin-top: 12px;
+          gap: 10px;
         }
 
-        .timeline-pillar-card {
-          background: var(--onyx);
-          border: 1px solid var(--jet);
+        .pillar-card {
+          background: linear-gradient(145deg, hsl(344, 32%, 14%) 0%, hsl(330, 20%, 11%) 100%);
+          border: 1px solid hsla(348, 50%, 35%, 0.35);
           border-radius: 12px;
-          padding: 14px 16px;
-          transition: border-color 0.2s ease;
+          padding: 12px 14px;
+          transition: border-color var(--ease-1);
         }
 
-        .timeline-pillar-card:hover {
-          border-color: hsla(43, 96%, 64%, 0.3);
-        }
+        .pillar-card:hover { border-color: hsla(43, 80%, 50%, 0.4); }
 
         .pillar-title {
-          font-size: var(--fs-6);
-          color: var(--gold-primary);
-          font-weight: var(--fw-600);
+          font-size: 12.5px;
+          color: hsl(43, 90%, 65%);
+          font-weight: 600;
           margin-bottom: 8px;
+          padding-bottom: 6px;
+          border-bottom: 1px solid hsla(348, 40%, 30%, 0.3);
         }
 
         .pillar-bullets {
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 5px;
         }
 
         .pillar-bullets li {
           display: flex;
           align-items: flex-start;
-          gap: 8px;
-          font-size: var(--fs-7);
-          color: var(--light-gray-70);
+          gap: 7px;
+          font-size: 12px;
+          color: hsla(330, 15%, 75%, 0.75);
           line-height: 1.5;
         }
 
         .bullet-icon {
-          color: var(--ruby-glow);
+          color: hsl(348, 80%, 65%);
           flex-shrink: 0;
           margin-top: 2px;
         }
 
-        .edu-bullets-list {
+        /* ── Education ── */
+        .edu-bullets {
           display: flex;
           flex-direction: column;
-          gap: 6px;
-          margin-top: 10px;
+          gap: 5px;
+          margin-top: 8px;
         }
 
         .edu-bullet-item {
           display: flex;
           align-items: center;
           gap: 8px;
-          font-size: var(--fs-7);
-          color: var(--light-gray);
+          font-size: 12.5px;
+          color: hsla(330, 15%, 75%, 0.8);
         }
 
-        .edu-dot {
+        .edu-dot-sm {
           width: 5px;
           height: 5px;
           border-radius: 50%;
-          background: var(--gold-primary);
+          background: hsl(43, 96%, 64%);
           flex-shrink: 0;
-          box-shadow: 0 0 6px var(--gold-primary);
+          box-shadow: 0 0 6px hsl(43, 96%, 64%);
         }
 
-        .skill-section {
-          margin-bottom: 20px;
-        }
+        /* ── Skills ── */
+        .skill-section { margin-bottom: 10px; }
+        .skills-heading { margin-bottom: 16px; }
 
-        .skills-title {
-          margin-bottom: 20px;
-        }
-
-        .skills-list {
-          padding: 24px;
+        .skills-card {
+          background: linear-gradient(145deg, hsl(344, 32%, 13%) 0%, hsl(330, 20%, 10%) 100%);
+          border: 1px solid hsla(348, 50%, 35%, 0.4);
+          border-radius: 16px;
+          padding: 18px;
           display: flex;
           flex-direction: column;
-          gap: 18px;
+          gap: 16px;
         }
 
-        .skills-item .title-wrapper {
+        .skill-item { }
+
+        .skill-meta {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 8px;
+          margin-bottom: 7px;
         }
 
-        .skills-item .skill-num {
-          color: var(--gold-primary);
-          font-size: var(--fs-7);
-          font-weight: var(--fw-600);
+        .skill-name {
+          font-size: 13px;
+          color: hsl(330, 25%, 92%);
+          font-weight: 500;
         }
 
-        .skill-progress-bg {
-          background: var(--jet);
+        .skill-pct {
+          font-size: 12px;
+          font-weight: 700;
+          color: hsl(43, 90%, 65%);
+        }
+
+        .skill-bar-bg {
+          background: hsla(344, 30%, 20%, 0.6);
           width: 100%;
-          height: 8px;
+          height: 7px;
           border-radius: 10px;
           overflow: hidden;
         }
 
-        .skill-progress-fill {
-          background: linear-gradient(90deg, var(--gold-primary) 0%, var(--ruby-primary) 100%);
+        .skill-bar-fill {
+          background: linear-gradient(90deg, hsl(43, 96%, 64%) 0%, hsl(348, 83%, 52%) 100%);
           height: 100%;
           border-radius: inherit;
-          transition: width 0.6s ease;
-          box-shadow: 0 0 10px hsla(348, 83%, 52%, 0.3);
+          transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 0 10px hsla(348, 83%, 52%, 0.4);
         }
 
         @media (min-width: 640px) {
-          .timeline-pillars-grid {
-            grid-template-columns: 1fr 1fr;
-          }
-          .timeline-list {
-            margin-left: 45px;
-          }
+          .pillars-grid { grid-template-columns: 1fr 1fr; }
+          .tl-list { padding-left: 40px; }
         }
 
         @media (min-width: 1024px) {
-          .timeline-pillars-grid {
-            grid-template-columns: 1fr 1fr 1fr;
-          }
+          .pillars-grid { grid-template-columns: repeat(3, 1fr); }
+          .skills-card { padding: 22px; gap: 18px; }
         }
       `}</style>
     </article>
