@@ -2,53 +2,67 @@ import React, { useState } from 'react';
 import { 
   Sliders, User, Briefcase, FolderGit2, Wrench, Layers, 
   GraduationCap, Quote, Save, RotateCcw, Download, Upload, 
-  Eye, Plus, Trash2, CheckCircle2, Sparkles, AlertCircle, X, Check
+  Eye, Plus, Trash2, CheckCircle2, Sparkles, AlertCircle, X, Check, Loader2
 } from 'lucide-react';
-import { defaultPortfolioData, saveStoredPortfolioData, resetStoredPortfolioData } from '../../data/portfolioData';
+import { defaultPortfolioData, savePortfolioData, resetPortfolioData } from '../../data/portfolioData';
 
 export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
   const [activeSection, setActiveSection] = useState('personal');
   const [localData, setLocalData] = useState(JSON.parse(JSON.stringify(data)));
-  const [saveToast, setSaveToast] = useState(false);
+  const [saveToast, setSaveToast] = useState(null); // null | 'saving' | 'success' | 'error'
   const [jsonModalOpen, setJsonModalOpen] = useState(false);
-  const [jsonMode, setJsonMode] = useState('export'); // 'export' | 'import'
+  const [jsonMode, setJsonMode] = useState('export');
   const [importJsonText, setImportJsonText] = useState('');
   const [importError, setImportError] = useState('');
   const [editingProjectIndex, setEditingProjectIndex] = useState(null);
 
-  // Save changes
-  const handleSave = () => {
-    saveStoredPortfolioData(localData);
-    onUpdateData(localData);
-    setSaveToast(true);
-    setTimeout(() => setSaveToast(false), 3000);
+  // Save changes (async to Supabase)
+  const handleSave = async () => {
+    setSaveToast('saving');
+    try {
+      await savePortfolioData(localData);
+      onUpdateData(localData);
+      setSaveToast('success');
+      setTimeout(() => setSaveToast(null), 3000);
+    } catch (err) {
+      console.error('Save failed:', err);
+      setSaveToast('error');
+      setTimeout(() => setSaveToast(null), 4000);
+    }
   };
 
-  // Reset to default
-  const handleReset = () => {
+  // Reset to default (async)
+  const handleReset = async () => {
     if (window.confirm('Are you sure you want to reset all portfolio data back to default? All custom edits will be reverted.')) {
-      const reset = resetStoredPortfolioData();
-      setLocalData(JSON.parse(JSON.stringify(reset)));
-      onUpdateData(reset);
-      setSaveToast(true);
-      setTimeout(() => setSaveToast(false), 3000);
+      setSaveToast('saving');
+      try {
+        const reset = await resetPortfolioData();
+        setLocalData(JSON.parse(JSON.stringify(reset)));
+        onUpdateData(reset);
+        setSaveToast('success');
+        setTimeout(() => setSaveToast(null), 3000);
+      } catch (err) {
+        console.error('Reset failed:', err);
+        setSaveToast('error');
+        setTimeout(() => setSaveToast(null), 4000);
+      }
     }
   };
 
   // Import JSON handler
-  const handleImport = () => {
+  const handleImport = async () => {
     try {
       setImportError('');
       const parsed = JSON.parse(importJsonText);
       const merged = { ...defaultPortfolioData, ...parsed };
       setLocalData(merged);
-      saveStoredPortfolioData(merged);
+      await savePortfolioData(merged);
       onUpdateData(merged);
       setJsonModalOpen(false);
-      setSaveToast(true);
-      setTimeout(() => setSaveToast(false), 3000);
+      setSaveToast('success');
+      setTimeout(() => setSaveToast(null), 3000);
     } catch (e) {
-      setImportError('Invalid JSON format: ' + e.message);
+      setImportError('Error: ' + e.message);
     }
   };
 
@@ -134,11 +148,12 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
         </div>
       </header>
 
-      {/* Save Success Toast */}
+      {/* Save Toast */}
       {saveToast && (
-        <div className="cms-toast" role="alert">
-          <CheckCircle2 size={18} />
-          <span>Changes saved successfully to live portfolio!</span>
+        <div className={`cms-toast ${saveToast === 'error' ? 'cms-toast-error' : ''}`} role="alert">
+          {saveToast === 'saving' && <><Loader2 size={18} className="spin-icon" /><span>Saving to database…</span></>}
+          {saveToast === 'success' && <><CheckCircle2 size={18} /><span>Changes saved to Supabase!</span></>}
+          {saveToast === 'error' && <><AlertCircle size={18} /><span>Save failed — changes saved locally only.</span></>}
         </div>
       )}
 
@@ -1356,6 +1371,20 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
           z-index: 200;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
           animation: fadeIn 0.3s ease;
+        }
+
+        .cms-toast-error {
+          background: #450a0a;
+          border-color: #dc2626;
+          color: #fca5a5;
+        }
+
+        .spin-icon {
+          animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
 
         /* Layout Grid */

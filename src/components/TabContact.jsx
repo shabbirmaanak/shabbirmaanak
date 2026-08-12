@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send, MapPin, CheckCircle2, AlertCircle, Phone, Mail, Linkedin, Instagram } from 'lucide-react';
+import { submitContactMessage } from '../data/portfolioData';
 
 export default function TabContact({ data }) {
   const personalInfo = data?.personalInfo || {};
@@ -39,11 +40,17 @@ export default function TabContact({ data }) {
     setIsSubmitting(true);
     setSubmitStatus(null);
     try {
-      await new Promise(resolve => setTimeout(resolve, 900));
+      await submitContactMessage({
+        fullname: formData.fullname.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim()
+      });
       setSubmitStatus('success');
       setLastSubmitTime(Date.now());
       setFormData({ fullname: '', email: '', subject: '', message: '' });
-    } catch {
+    } catch (err) {
+      console.error('Contact form error:', err);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

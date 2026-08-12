@@ -1,3 +1,5 @@
+import { supabase } from '../lib/supabase';
+
 export const defaultPortfolioData = {
   personalInfo: {
     name: "Shabbir Maanak",
@@ -450,17 +452,142 @@ export const defaultPortfolioData = {
 
 export const portfolioData = defaultPortfolioData;
 
-// Storage helpers
+// ============================================
+// SUPABASE DATA FUNCTIONS
+// ============================================
+
 const STORAGE_KEY = 'shabbir_portfolio_cms_data_v1';
 
-export function getStoredPortfolioData() {
+/**
+ * Fetch portfolio data from Supabase.
+ * Falls back to localStorage → defaultPortfolioData.
+ */
+export async function fetchPortfolioData() {
+  // Try Supabase first
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('portfolio_content')
+        .select('data')
+        .eq('id', 1)
+        .single();
+
+      if (!error && data?.data) {
+        const merged = { ...defaultPortfolioData, ...data.data };
+        // Cache in localStorage for offline fallback
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch {}
+        return merged;
+      }
+    } catch (e) {
+      console.warn('[Supabase] Fetch failed, trying localStorage fallback:', e.message);
+    }
+  }
+
+  // Fallback: localStorage
+  return getStoredPortfolioDataLocal();
+}
+
+/**
+ * Save portfolio data to Supabase (upsert).
+ * Also caches in localStorage as fallback.
+ */
+export async function savePortfolioData(newData) {
+  // Always cache locally
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(newData)); } catch {}
+
+  if (supabase) {
+    const { error } = await supabase
+      .from('portfolio_content')
+      .upsert({
+        id: 1,
+        data: newData,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+
+    if (error) {
+      console.error('[Supabase] Save error:', error.message);
+      throw new Error('Failed to save to database: ' + error.message);
+    }
+    return { success: true, source: 'supabase' };
+  }
+
+  return { success: true, source: 'localStorage' };
+}
+
+/**
+ * Reset portfolio data back to defaults.
+ */
+export async function resetPortfolioData() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch {}
+
+  if (supabase) {
+    const { error } = await supabase
+      .from('portfolio_content')
+      .upsert({
+        id: 1,
+        data: defaultPortfolioData,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+
+    if (error) {
+      console.error('[Supabase] Reset error:', error.message);
+    }
+  }
+
+  return defaultPortfolioData;
+}
+
+/**
+ * Submit a contact message to Supabase.
+ */
+export async function submitContactMessage({ fullname, email, subject, message }) {
+  if (supabase) {
+    const { error } = await supabase
+      .from('contact_messages')
+      .insert([{ fullname, email, subject, message }]);
+
+    if (error) {
+      console.error('[Supabase] Contact submit error:', error.message);
+      throw new Error('Failed to send message: ' + error.message);
+    }
+    return { success: true, source: 'supabase' };
+  }
+
+  // No Supabase — just log
+  console.log('[Contact] Message submitted (no DB):', { fullname, email, subject, message });
+  return { success: true, source: 'local' };
+}
+
+/**
+ * Fetch contact messages from Supabase (for admin panel).
+ */
+export async function fetchContactMessages() {
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from('contact_messages')
+    .select('*')
+    .order('sent_at', { ascending: false });
+
+  if (error) {
+    console.error('[Supabase] Fetch messages error:', error.message);
+    return [];
+  }
+  return data || [];
+}
+
+// ============================================
+// LEGACY localStorage helpers (kept as fallback)
+// ============================================
+
+function getStoredPortfolioDataLocal() {
   if (typeof window === 'undefined') return defaultPortfolioData;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      return { 
-        ...defaultPortfolioData, 
+      return {
+        ...defaultPortfolioData,
         ...parsed,
         personalInfo: { ...defaultPortfolioData.personalInfo, ...(parsed.personalInfo || {}) }
       };
@@ -471,21 +598,18 @@ export function getStoredPortfolioData() {
   return defaultPortfolioData;
 }
 
+// Synchronous getter for initial render (before async fetch completes)
+export function getStoredPortfolioData() {
+  return getStoredPortfolioDataLocal();
+}
+
+// Legacy aliases (for backward compat during migration)
 export function saveStoredPortfolioData(data) {
-  if (typeof window === 'undefined') return;
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch (e) {
-    console.error('Error saving portfolio data', e);
-  }
+  // Fire-and-forget async save
+  savePortfolioData(data).catch(e => console.error('Save error:', e));
 }
 
 export function resetStoredPortfolioData() {
-  if (typeof window === 'undefined') return defaultPortfolioData;
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch (e) {
-    console.error('Error resetting portfolio data', e);
-  }
+  resetPortfolioData().catch(e => console.error('Reset error:', e));
   return defaultPortfolioData;
 }

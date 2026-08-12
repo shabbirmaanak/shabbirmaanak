@@ -9,14 +9,33 @@ import TabContact from './components/TabContact';
 import ProjectModal from './components/ProjectModal';
 import ResumeModal from './components/ResumeModal';
 import AdminDashboard from './components/admin/AdminDashboard';
-import { getStoredPortfolioData } from './data/portfolioData';
+import { getStoredPortfolioData, fetchPortfolioData } from './data/portfolioData';
 
 export default function App() {
+  // Initialize with localStorage (instant), then hydrate from Supabase
   const [data, setData] = useState(() => getStoredPortfolioData());
   const [activeTab, setActiveTab] = useState('about');
   const [selectedProject, setSelectedProject] = useState(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch data from Supabase on mount
+  useEffect(() => {
+    let cancelled = false;
+    fetchPortfolioData()
+      .then((supabaseData) => {
+        if (!cancelled) {
+          setData(supabaseData);
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.warn('[App] Supabase fetch failed, using local data:', err);
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   // Check URL hash/query on load and when URL changes
   useEffect(() => {
@@ -55,6 +74,44 @@ export default function App() {
         onUpdateData={(newData) => setData(newData)}
         onExitAdmin={handleExitAdmin}
       />
+    );
+  }
+
+  // Loading screen while Supabase hydrates
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner" />
+        <p className="loading-text">Loading portfolio…</p>
+        <style>{`
+          .loading-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: hsl(330, 22%, 7%);
+            gap: 18px;
+          }
+          .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid hsla(348, 50%, 35%, 0.3);
+            border-top-color: hsl(43, 96%, 64%);
+            animation: spin 0.8s linear infinite;
+          }
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+          .loading-text {
+            color: hsla(330, 15%, 70%, 0.7);
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+          }
+        `}</style>
+      </div>
     );
   }
 
