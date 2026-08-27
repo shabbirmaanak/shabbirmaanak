@@ -63,6 +63,9 @@ export default function App() {
 
   const handleExitAdmin = () => {
     window.location.hash = '';
+    if (window.history && window.history.pushState && window.location.pathname.toLowerCase().includes('admin')) {
+      window.history.pushState('', document.title, '/');
+    }
     setIsAdmin(false);
   };
 
