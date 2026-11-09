@@ -31,8 +31,22 @@ export default function ProjectModal({ project, onClose }) {
               <span>{project.categoryLabel}</span>
             </div>
             <h2 className="modal-project-title">{project.title}</h2>
-            <div className="modal-role-pill">
-              <strong>Role:</strong> {project.role}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+              <div className="modal-role-pill">
+                <strong>Role:</strong> {project.role}
+              </div>
+              {project.projectUrl && (
+                <a 
+                  href={project.projectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="modal-visit-btn"
+                  title="Open live project in new tab"
+                >
+                  <ExternalLink size={14} />
+                  <span>Visit Live Project</span>
+                </a>
+              )}
             </div>
           </div>
 
@@ -127,13 +141,27 @@ export default function ProjectModal({ project, onClose }) {
           <div className="modal-footer-meta">
             <span>Case Study for {project.title}</span>
           </div>
-          <button 
-            type="button"
-            className="btn btn-outline btn-sm" 
-            onClick={onClose}
-          >
-            Close Case Study
-          </button>
+          <div className="modal-footer-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            {project.projectUrl && (
+              <a 
+                href={project.projectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-sm modal-footer-launch-btn"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <span>Visit Live Project</span>
+                <ExternalLink size={15} />
+              </a>
+            )}
+            <button 
+              type="button"
+              className="btn btn-outline btn-sm" 
+              onClick={onClose}
+            >
+              Close Case Study
+            </button>
+          </div>
         </div>
       </div>
 
@@ -211,6 +239,43 @@ export default function ProjectModal({ project, onClose }) {
           background: rgba(0, 0, 0, 0.3);
           padding: 0.25rem 0.75rem;
           border-radius: 6px;
+        }
+
+        .modal-visit-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: #11141a;
+          background: linear-gradient(135deg, #fcd34d 0%, #d4af37 100%);
+          padding: 0.28rem 0.85rem;
+          border-radius: 6px;
+          text-decoration: none;
+          box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+          transition: all 0.2s ease;
+        }
+
+        .modal-visit-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(212, 175, 55, 0.55);
+          color: #000;
+          filter: brightness(1.1);
+        }
+
+        .modal-footer-launch-btn {
+          background: linear-gradient(135deg, #fcd34d 0%, #d4af37 100%) !important;
+          color: #11141a !important;
+          font-weight: 700 !important;
+          border: none !important;
+          box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+          transition: all 0.2s ease;
+        }
+
+        .modal-footer-launch-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(212, 175, 55, 0.55);
+          filter: brightness(1.1);
         }
 
         .modal-close-btn {

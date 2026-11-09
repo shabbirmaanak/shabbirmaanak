@@ -299,6 +299,7 @@ export const defaultPortfolioData = {
     {
       id: "welfare-multimedia-campaign",
       title: "Community Well-being Awareness & Multimedia Campaign",
+      projectUrl: "",
       category: "multimedia",
       categoryLabel: "Multimedia Campaigns",
       featured: true,
@@ -317,6 +318,7 @@ export const defaultPortfolioData = {
     {
       id: "institutional-workflow-automation",
       title: "Automated Administrative Workflow & Reporting System",
+      projectUrl: "",
       category: "automation",
       categoryLabel: "Workflow Automation",
       featured: true,
@@ -335,6 +337,7 @@ export const defaultPortfolioData = {
     {
       id: "ai-productivity-integration-study",
       title: "Generative AI & Productivity Framework for Administrative Teams",
+      projectUrl: "",
       category: "research",
       categoryLabel: "Research Projects",
       featured: true,
@@ -353,6 +356,7 @@ export const defaultPortfolioData = {
     {
       id: "executive-brand-identity-collateral",
       title: "Departmental Visual Identity & Presentation Suite",
+      projectUrl: "",
       category: "design",
       categoryLabel: "Creative Designs",
       featured: false,
@@ -371,6 +375,7 @@ export const defaultPortfolioData = {
     {
       id: "interactive-media-portal",
       title: "Centralized Digital Asset & Resource Distribution Portal",
+      projectUrl: "",
       category: "tech",
       categoryLabel: "Technology Solutions",
       featured: false,
@@ -389,6 +394,7 @@ export const defaultPortfolioData = {
     {
       id: "process-standardization-handbook",
       title: "Comprehensive Administrative Operations & SOP Manual",
+      projectUrl: "",
       category: "automation",
       categoryLabel: "Workflow Automation",
       featured: false,

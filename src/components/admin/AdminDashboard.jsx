@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Sliders, User, Briefcase, FolderGit2, Wrench, Layers, 
   GraduationCap, Quote, Save, RotateCcw, Download, Upload, 
-  Eye, Plus, Trash2, CheckCircle2, Sparkles, AlertCircle, X, Check, Loader2
+  Eye, Plus, Trash2, CheckCircle2, Sparkles, AlertCircle, X, Check, Loader2, ExternalLink
 } from 'lucide-react';
 import { defaultPortfolioData, savePortfolioData, resetPortfolioData } from '../../data/portfolioData';
 
@@ -400,6 +400,7 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
                     const newProj = {
                       id: `project-${Date.now()}`,
                       title: "New Case Study Project",
+                      projectUrl: "",
                       category: "multimedia",
                       categoryLabel: "Multimedia Campaigns",
                       featured: false,
@@ -507,6 +508,26 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
                         <option value="true">Yes (Featured Badge)</option>
                         <option value="false">No (Standard)</option>
                       </select>
+                    </div>
+
+                    <div className="cms-field full-width">
+                      <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <ExternalLink size={14} style={{ color: 'var(--gold-primary)' }} />
+                        <span>Project Redirect Link / Live URL (Optional)</span>
+                      </label>
+                      <input
+                        type="url"
+                        placeholder="e.g. https://github.com/... or https://your-live-demo.com"
+                        value={localData.projects[editingProjectIndex].projectUrl || ''}
+                        onChange={(e) => {
+                          const updated = [...localData.projects];
+                          updated[editingProjectIndex].projectUrl = e.target.value;
+                          updateField('projects', updated);
+                        }}
+                      />
+                      <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '4px', display: 'block' }}>
+                        When set, viewers can click to redirect directly to this live page or demo.
+                      </span>
                     </div>
 
                     <div className="cms-field full-width">
@@ -624,6 +645,33 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
                         <span className="cms-row-badge">{proj.categoryLabel}</span>
                         <h4 className="cms-row-title">{proj.title}</h4>
                         <p className="cms-row-sub">{proj.shortDesc}</p>
+                        {proj.projectUrl && (
+                          <div style={{ marginTop: '6px' }}>
+                            <a
+                              href={proj.projectUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                                fontSize: '11px',
+                                color: 'var(--gold-primary, #d4af37)',
+                                textDecoration: 'none',
+                                background: 'rgba(212, 175, 55, 0.1)',
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                border: '1px solid rgba(212, 175, 55, 0.25)'
+                              }}
+                            >
+                              <ExternalLink size={11} />
+                              <span style={{ maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {proj.projectUrl}
+                              </span>
+                            </a>
+                          </div>
+                        )}
                       </div>
                       <div className="cms-row-actions">
                         <button
