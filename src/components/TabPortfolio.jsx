@@ -81,9 +81,22 @@ export default function TabPortfolio({ data, onSelectProject }) {
                   className="project-img" 
                   style={{ background: project.thumbnailGradient }}
                 >
-                  <div className="project-item-icon-box">
-                    <Eye size={22} className="eye-icon" />
-                  </div>
+                  {project.projectUrl ? (
+                    <a
+                      href={project.projectUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="project-item-icon-box"
+                      title={`Visit ${project.title} webpage`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Eye size={22} className="eye-icon" />
+                    </a>
+                  ) : (
+                    <div className="project-item-icon-box">
+                      <Eye size={22} className="eye-icon" />
+                    </div>
+                  )}
                   <div className="project-banner-symbol">
                     <Zap size={32} style={{ color: project.accentColor || '#f59e0b' }} />
                   </div>
@@ -280,11 +293,25 @@ export default function TabPortfolio({ data, onSelectProject }) {
           z-index: 2;
           transition: var(--transition-1);
           box-shadow: 0 0 20px hsla(348, 83%, 52%, 0.4);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
         }
 
         .project-item:hover .project-item-icon-box {
           transform: translate(-50%, -50%) scale(1);
           opacity: 1;
+        }
+
+        a.project-item-icon-box {
+          cursor: pointer;
+        }
+
+        a.project-item-icon-box:hover {
+          transform: translate(-50%, -50%) scale(1.15) !important;
+          box-shadow: 0 0 30px hsla(43, 96%, 64%, 0.7), 0 0 40px hsla(348, 83%, 52%, 0.6) !important;
+          filter: brightness(1.12);
         }
 
         .project-title-row {
