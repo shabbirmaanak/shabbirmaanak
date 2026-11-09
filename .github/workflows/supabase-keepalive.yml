@@ -1,0 +1,29 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Run every day at 06:00 UTC (well within Supabase 7-day inactivity limit)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual run anytime from GitHub Actions tab
+
+jobs:
+  ping:
+    name: Ping Supabase Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase API
+        run: |
+          URL="${{ secrets.SUPABASE_URL || 'https://uozglvqfweplzxhzzxxp.supabase.co' }}"
+          KEY="${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_7rbHwfsS1e_2EJYsH3fbLw_t36QxON1' }}"
+          
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $KEY" \
+            -H "Authorization: Bearer $KEY" \
+            "$URL/rest/v1/portfolio_content?select=id&limit=1")
+          
+          echo "Supabase responded with HTTP status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 206 ]; then
+            echo "✅ Successfully pinged Supabase! Database kept active."
+          else
+            echo "⚠️ Received HTTP status $HTTP_STATUS (check if project is paused in Supabase dashboard)."
+          fi
