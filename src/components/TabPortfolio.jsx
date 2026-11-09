@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, ChevronDown, Zap, ExternalLink } from 'lucide-react';
+import { Eye, ChevronDown, Zap } from 'lucide-react';
 
 export default function TabPortfolio({ data, onSelectProject }) {
   const projects = data?.projects || [];
@@ -103,22 +103,7 @@ export default function TabPortfolio({ data, onSelectProject }) {
                 </figure>
 
                 <div className="project-meta-box">
-                  <div className="project-title-row">
-                    <h3 className="project-title">{project.title}</h3>
-                    {project.projectUrl && (
-                      <a
-                        href={project.projectUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="project-direct-link-btn"
-                        title="Visit live project in new tab"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <span>Live</span>
-                        <ExternalLink size={12} />
-                      </a>
-                    )}
-                  </div>
+                  <h3 className="project-title">{project.title}</h3>
                   <p className="project-category">{project.categoryLabel}</p>
                   
                   <div className="project-preview-outcome">
@@ -314,46 +299,13 @@ export default function TabPortfolio({ data, onSelectProject }) {
           filter: brightness(1.12);
         }
 
-        .project-title-row {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 8px;
-          margin-bottom: 4px;
-        }
-
-        .project-direct-link-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          font-size: 11px;
-          font-weight: 700;
-          color: var(--gold-primary, #d4af37);
-          background: rgba(212, 175, 55, 0.12);
-          border: 1px solid rgba(212, 175, 55, 0.3);
-          padding: 2px 7px;
-          border-radius: 6px;
-          text-decoration: none;
-          flex-shrink: 0;
-          margin-top: 2px;
-          transition: all 0.2s ease;
-        }
-
-        .project-direct-link-btn:hover {
-          background: linear-gradient(135deg, #fcd34d 0%, #d4af37 100%);
-          color: #0d1017;
-          border-color: #d4af37;
-          transform: translateY(-1px);
-          box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
-        }
-
         .project-title {
           color: var(--white-2);
           font-size: var(--fs-4);
           font-weight: var(--fw-600);
           text-transform: capitalize;
           line-height: 1.35;
-          margin-bottom: 0;
+          margin-bottom: 4px;
           transition: color var(--transition-1);
         }
 
