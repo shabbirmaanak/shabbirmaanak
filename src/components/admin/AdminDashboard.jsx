@@ -26,8 +26,10 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
       setTimeout(() => setSaveToast(null), 3000);
     } catch (err) {
       console.error('Save failed:', err);
+      // Keep in-memory app state updated so edits reflect in the current session
+      onUpdateData(localData);
       setSaveToast('error');
-      setTimeout(() => setSaveToast(null), 4000);
+      setTimeout(() => setSaveToast(null), 6000);
     }
   };
 
@@ -153,7 +155,17 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
         <div className={`cms-toast ${saveToast === 'error' ? 'cms-toast-error' : ''}`} role="alert">
           {saveToast === 'saving' && <><Loader2 size={18} className="spin-icon" /><span>Saving to database…</span></>}
           {saveToast === 'success' && <><CheckCircle2 size={18} /><span>Changes saved to Supabase!</span></>}
-          {saveToast === 'error' && <><AlertCircle size={18} /><span>Save failed — changes saved locally only.</span></>}
+          {saveToast === 'error' && (
+            <>
+              <AlertCircle size={18} />
+              <div>
+                <div><strong>Save failed:</strong> Database unreachable.</div>
+                <div style={{ fontSize: '11px', opacity: 0.9, marginTop: '2px', fontWeight: 'normal' }}>
+                  Supabase project may be paused. Visit supabase.com/dashboard to restore it.
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
 
