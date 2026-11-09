@@ -9,6 +9,7 @@ import TabContact from './components/TabContact';
 import ProjectModal from './components/ProjectModal';
 import ResumeModal from './components/ResumeModal';
 import AdminDashboard from './components/admin/AdminDashboard';
+import EditorialPortfolio from './components/EditorialPortfolio';
 import { getStoredPortfolioData, fetchPortfolioData } from './data/portfolioData';
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [layoutMode, setLayoutMode] = useState('editorial'); // 'editorial' | 'classic'
 
   // Fetch data from Supabase on mount
   useEffect(() => {
@@ -118,37 +120,107 @@ export default function App() {
     );
   }
 
-  // Otherwise render Public vCard Portfolio
+  // Render Public Portfolio (Editorial by default, with Classic toggle)
   return (
-    <div className="vcard-app-container">
-      <main className="vcard-main-layout">
-        {/* Left Sticky Sidebar Profile Card */}
-        <Sidebar 
+    <>
+      {layoutMode === 'editorial' ? (
+        <EditorialPortfolio
           data={data}
-          onOpenResume={() => setIsResumeOpen(true)} 
+          onSelectProject={(project) => setSelectedProject(project)}
+          onOpenResume={() => setIsResumeOpen(true)}
         />
-
-        {/* Right Main Content Card with Floating Top-Right Tabs */}
-        <div className="vcard-right-content">
-          <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-          {activeTab === 'about' && <TabAbout data={data} />}
-          {activeTab === 'resume' && (
-            <TabResume 
+      ) : (
+        <div className="vcard-app-container">
+          <main className="vcard-main-layout">
+            {/* Left Sticky Sidebar Profile Card */}
+            <Sidebar 
               data={data}
               onOpenResume={() => setIsResumeOpen(true)} 
             />
-          )}
-          {activeTab === 'portfolio' && (
-            <TabPortfolio 
-              data={data}
-              onSelectProject={(project) => setSelectedProject(project)} 
-            />
-          )}
-          {activeTab === 'skills' && <TabSkills data={data} />}
-          {activeTab === 'contact' && <TabContact data={data} />}
+
+            {/* Right Main Content Card with Floating Top-Right Tabs */}
+            <div className="vcard-right-content">
+              <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+              {activeTab === 'about' && <TabAbout data={data} />}
+              {activeTab === 'resume' && (
+                <TabResume 
+                  data={data}
+                  onOpenResume={() => setIsResumeOpen(true)} 
+                />
+              )}
+              {activeTab === 'portfolio' && (
+                <TabPortfolio 
+                  data={data}
+                  onSelectProject={(project) => setSelectedProject(project)} 
+                />
+              )}
+              {activeTab === 'skills' && <TabSkills data={data} />}
+              {activeTab === 'contact' && <TabContact data={data} />}
+            </div>
+          </main>
         </div>
-      </main>
+      )}
+
+      {/* Floating Theme / Layout Switcher */}
+      <aside className="layout-mode-switcher" aria-label="Layout Theme Switcher">
+        <button
+          type="button"
+          onClick={() => setLayoutMode(layoutMode === 'editorial' ? 'classic' : 'editorial')}
+          className="switcher-toggle-pill"
+          title="Switch between the new Editorial theme and Classic vCard theme"
+        >
+          <span className="switcher-icon">{layoutMode === 'editorial' ? '✨' : '🌙'}</span>
+          <span className="switcher-label">
+            Theme: <strong>{layoutMode === 'editorial' ? 'Editorial Luxury' : 'Classic Dark'}</strong>
+          </span>
+          <span className="switcher-hint">(Click to compare)</span>
+        </button>
+
+        <style>{`
+          .layout-mode-switcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+          }
+          .switcher-toggle-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #11141a;
+            color: #ffffff;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 9999px;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s ease;
+          }
+          .switcher-toggle-pill:hover {
+            transform: translateY(-2px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 28px rgba(212, 175, 55, 0.3);
+          }
+          .switcher-label strong {
+            color: #fcd34d;
+          }
+          .switcher-hint {
+            font-size: 10px;
+            color: #94a3b8;
+          }
+          @media (max-width: 640px) {
+            .layout-mode-switcher {
+              bottom: 15px;
+              right: 15px;
+            }
+            .switcher-hint {
+              display: none;
+            }
+          }
+        `}</style>
+      </aside>
 
       {/* Case Study Modal */}
       {selectedProject && (
@@ -166,6 +238,6 @@ export default function App() {
           onClose={() => setIsResumeOpen(false)} 
         />
       )}
-    </div>
+    </>
   );
 }
