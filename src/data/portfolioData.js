@@ -4,6 +4,7 @@ export const defaultPortfolioData = {
   personalInfo: {
     name: "Shabbir Maanak",
     secondName: "",
+    avatarUrl: "",
     initials: "SM",
     role: "Assistant Administrator",
     positioning: "Research & Development | IT & Multimedia | Operations",

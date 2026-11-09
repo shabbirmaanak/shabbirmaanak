@@ -19,7 +19,7 @@ export default function Sidebar({ data, onOpenResume }) {
           <div className="sb-avatar-ring">
             <div className="sb-avatar-wrap">
               <img
-                src={logoImg}
+                src={personalInfo.avatarUrl || logoImg}
                 alt="Shabbir Maanak monogram"
                 className="sb-avatar-img"
                 loading="eager"

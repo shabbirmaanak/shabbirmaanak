@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { 
   Sliders, User, Briefcase, FolderGit2, Wrench, Layers, 
   GraduationCap, Quote, Save, RotateCcw, Download, Upload, 
-  Eye, Plus, Trash2, CheckCircle2, Sparkles, AlertCircle, X, Check, Loader2, ExternalLink
+  Eye, Plus, Trash2, CheckCircle2, Sparkles, AlertCircle, X, Check, Loader2, ExternalLink, Camera
 } from 'lucide-react';
+import logoImg from '../../assets/logo.jpg';
 import { defaultPortfolioData, savePortfolioData, resetPortfolioData } from '../../data/portfolioData';
 
 export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
@@ -81,6 +82,44 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
       cur[keys[keys.length - 1]] = value;
       return clone;
     });
+  };
+
+  // Upload, optimize, and resize profile photo
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const maxDim = 500;
+        let width = img.width;
+        let height = img.height;
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        updateField('personalInfo.avatarUrl', dataUrl);
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -253,7 +292,64 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
           {activeSection === 'personal' && (
             <div className="cms-section-card">
               <h2 className="cms-section-title">Personal Identity & Contact Information</h2>
-              <p className="cms-section-subtitle">Manage your primary brand positioning, contact details, bio, and social channels.</p>
+              <p className="cms-section-subtitle">Manage your profile photo, primary brand positioning, contact details, bio, and social channels.</p>
+
+              {/* Profile Photo / Avatar Editor */}
+              <div className="cms-avatar-uploader-card">
+                <div className="cms-avatar-preview-wrap">
+                  <img
+                    src={localData.personalInfo.avatarUrl || logoImg}
+                    alt="Profile Preview"
+                    className="cms-avatar-preview-img"
+                  />
+                  <div className="cms-avatar-badge">
+                    <Camera size={14} />
+                  </div>
+                </div>
+
+                <div className="cms-avatar-controls">
+                  <h4 className="cms-avatar-title">Profile Photo / Brand Monogram</h4>
+                  <p className="cms-avatar-hint">
+                    Upload your headshot or custom monogram logo. Automatically resized and optimized.
+                  </p>
+
+                  <div className="cms-avatar-btn-row">
+                    <label className="cms-btn-upload-photo">
+                      <Upload size={14} />
+                      <span>Upload New Photo</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+
+                    {localData.personalInfo.avatarUrl && (
+                      <button
+                        type="button"
+                        onClick={() => updateField('personalInfo.avatarUrl', '')}
+                        className="cms-btn-subtle"
+                        title="Revert to original default monogram logo"
+                      >
+                        <RotateCcw size={13} />
+                        <span>Reset to Monogram</span>
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="cms-field" style={{ marginTop: '12px' }}>
+                    <label style={{ fontSize: '11px' }}>Or Paste an Image URL</label>
+                    <input
+                      type="url"
+                      placeholder="https://example.com/photo.jpg"
+                      value={localData.personalInfo.avatarUrl || ''}
+                      onChange={(e) => updateField('personalInfo.avatarUrl', e.target.value)}
+                      style={{ fontSize: '12px', padding: '6px 10px' }}
+                    />
+                  </div>
+                </div>
+              </div>
 
               <div className="cms-form-grid">
                 <div className="cms-field">
@@ -1534,6 +1630,100 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
           font-size: 13px;
           color: #94a3b8;
           margin-bottom: 25px;
+        }
+
+        /* Avatar Uploader */
+        .cms-avatar-uploader-card {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+          padding: 22px;
+          background: #090b10;
+          border: 1px solid rgba(212, 175, 55, 0.25);
+          border-radius: 16px;
+          margin-bottom: 26px;
+          flex-wrap: wrap;
+        }
+
+        .cms-avatar-preview-wrap {
+          position: relative;
+          width: 96px;
+          height: 96px;
+          border-radius: 50%;
+          border: 2px solid #d4af37;
+          overflow: hidden;
+          background: #ffffff;
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .cms-avatar-preview-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .cms-avatar-badge {
+          position: absolute;
+          bottom: 2px;
+          right: 2px;
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          background: #d4af37;
+          color: #121212;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .cms-avatar-controls {
+          flex: 1;
+          min-width: 250px;
+        }
+
+        .cms-avatar-title {
+          font-size: 15px;
+          font-weight: 700;
+          color: #f8fafc;
+          margin-bottom: 4px;
+        }
+
+        .cms-avatar-hint {
+          font-size: 12px;
+          color: #94a3b8;
+          margin-bottom: 12px;
+          line-height: 1.4;
+        }
+
+        .cms-avatar-btn-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+
+        .cms-btn-upload-photo {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          background: linear-gradient(135deg, #fcd34d 0%, #d4af37 100%);
+          color: #0f172a;
+          font-size: 12px;
+          font-weight: 700;
+          padding: 8px 16px;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .cms-btn-upload-photo:hover {
+          transform: translateY(-1px);
+          filter: brightness(1.1);
         }
 
         .cms-card-header-row {

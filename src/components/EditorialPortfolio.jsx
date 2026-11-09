@@ -61,7 +61,7 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
         <div className="ed-header-inner">
           <a href="#" className="ed-brand-logo">
             <div className="ed-brand-avatar">
-              <img src={logoImg} alt="Monogram" className="ed-brand-img" />
+              <img src={personalInfo.avatarUrl || logoImg} alt="Monogram" className="ed-brand-img" />
             </div>
             <div className="ed-brand-text">
               <span className="ed-brand-name">{personalInfo.name}</span>
@@ -151,7 +151,7 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
 
               <div className="ed-circular-frame">
                 <img 
-                  src={logoImg} 
+                  src={personalInfo.avatarUrl || logoImg} 
                   alt={personalInfo.name} 
                   className="ed-circular-img" 
                 />
@@ -521,7 +521,7 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
         <div className="ed-container ed-footer-inner">
           <div className="ed-footer-brand">
             <div className="ed-footer-avatar">
-              <img src={logoImg} alt="Monogram" />
+              <img src={personalInfo.avatarUrl || logoImg} alt="Monogram" />
             </div>
             <p className="ed-footer-copy">
               © {new Date().getFullYear()} {personalInfo.name}. Designed with editorial passion &amp; operational precision.
