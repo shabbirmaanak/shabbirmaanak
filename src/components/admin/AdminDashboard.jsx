@@ -260,8 +260,19 @@ export default function AdminDashboard({ data, onUpdateData, onExitAdmin }) {
                   <label>Full Name</label>
                   <input
                     type="text"
+                    placeholder="e.g. Shabbir Mustafa Heera"
                     value={localData.personalInfo.name}
                     onChange={(e) => updateField('personalInfo.name', e.target.value)}
+                  />
+                </div>
+
+                <div className="cms-field">
+                  <label>Second Name / Honorific Name (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. (Mulla Shabbir Shk Mustafa bh Maanak)"
+                    value={localData.personalInfo.secondName || ''}
+                    onChange={(e) => updateField('personalInfo.secondName', e.target.value)}
                   />
                 </div>
 

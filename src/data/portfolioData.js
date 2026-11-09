@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase.js';
 export const defaultPortfolioData = {
   personalInfo: {
     name: "Shabbir Maanak",
+    secondName: "",
     initials: "SM",
     role: "Assistant Administrator",
     positioning: "Research & Development | IT & Multimedia | Operations",

@@ -30,6 +30,9 @@ export default function Sidebar({ data, onOpenResume }) {
           {/* Identity text */}
           <div className="sb-identity">
             <h1 className="sb-name">{personalInfo.name}</h1>
+            {personalInfo.secondName && (
+              <p className="sb-second-name">{personalInfo.secondName}</p>
+            )}
             <span className="sb-role-badge">{personalInfo.role}</span>
             <p className="sb-org">{personalInfo.organization}</p>
           </div>
@@ -166,6 +169,18 @@ export default function Sidebar({ data, onOpenResume }) {
           color: hsl(330, 30%, 96%);
           letter-spacing: -0.02em;
           line-height: 1.2;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .sb-second-name {
+          font-size: 11.5px;
+          color: hsl(330, 20%, 78%);
+          font-weight: 500;
+          line-height: 1.25;
+          margin-top: -2px;
+          margin-bottom: 2px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -385,6 +400,18 @@ export default function Sidebar({ data, onOpenResume }) {
             font-size: 20px;
             white-space: normal;
             text-align: center;
+          }
+
+          .sb-second-name {
+            font-size: 12.5px;
+            color: hsl(330, 25%, 80%);
+            font-weight: 500;
+            line-height: 1.35;
+            white-space: normal;
+            text-align: center;
+            margin-top: -3px;
+            margin-bottom: 3px;
+            max-width: 220px;
           }
 
           .sb-role-badge {

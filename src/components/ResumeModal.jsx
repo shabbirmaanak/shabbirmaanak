@@ -70,7 +70,14 @@ export default function ResumeModal({ data, isOpen, onClose }) {
           {/* Header */}
           <header className="resume-header">
             <div className="resume-header-top">
-              <h1 className="resume-person-name">{personalInfo.name}</h1>
+              <div>
+                <h1 className="resume-person-name">{personalInfo.name}</h1>
+                {personalInfo.secondName && (
+                  <p style={{ fontSize: '12px', color: '#64748b', fontStyle: 'italic', marginTop: '2px' }}>
+                    {personalInfo.secondName}
+                  </p>
+                )}
+              </div>
               <span className="resume-person-title">{personalInfo.role}</span>
             </div>
             <p className="resume-positioning-line">
