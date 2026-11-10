@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Mail, Phone, MapPin, ExternalLink, Sparkles, CheckCircle2, 
   Send, Loader2, ArrowUpRight, Menu, X, FileText, Briefcase, 
-  GraduationCap, Award, Zap
+  GraduationCap, Award, Zap, Linkedin, Instagram, Github
 } from 'lucide-react';
 import logoImg from '../assets/logo.jpg';
 import { submitContactMessage } from '../data/portfolioData';
@@ -144,11 +144,6 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
 
             {/* Hero Circular Framed Portrait */}
             <div className="ed-hero-visual-wrap">
-              <div className="ed-floating-badge-top">
-                <span>☕</span>
-                <span>{personalInfo.department || "Operations & R&D"}</span>
-              </div>
-
               <div className="ed-circular-frame">
                 <img 
                   src={personalInfo.avatarUrl || logoImg} 
@@ -157,15 +152,26 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
                 />
               </div>
 
-              <div className="ed-floating-badge-bottom">
+              <div className="ed-photo-socials-centered">
                 {personalInfo.linkedin && (
-                  <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn">in</a>
+                  <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn" className="ed-social-icon-btn">
+                    <Linkedin size={15} />
+                  </a>
                 )}
                 {personalInfo.github && (
-                  <a href={personalInfo.github} target="_blank" rel="noopener noreferrer" title="GitHub">gh</a>
+                  <a href={personalInfo.github} target="_blank" rel="noopener noreferrer" title="GitHub" className="ed-social-icon-btn">
+                    <Github size={15} />
+                  </a>
                 )}
                 {personalInfo.instagram && (
-                  <a href={personalInfo.instagram} target="_blank" rel="noopener noreferrer" title="Instagram">ig</a>
+                  <a href={personalInfo.instagram} target="_blank" rel="noopener noreferrer" title="Instagram" className="ed-social-icon-btn">
+                    <Instagram size={15} />
+                  </a>
+                )}
+                {personalInfo.email && (
+                  <a href={`mailto:${personalInfo.email}`} title="Email" className="ed-social-icon-btn">
+                    <Mail size={15} />
+                  </a>
                 )}
               </div>
             </div>
@@ -817,26 +823,8 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
         /* Circular Frame Portrait */
         .ed-hero-visual-wrap {
           position: relative;
-          max-width: 260px;
-          margin: 35px auto 30px;
-        }
-
-        .ed-floating-badge-top {
-          position: absolute;
-          top: -10px;
-          left: -15px;
-          z-index: 10;
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(8px);
-          border: 1px solid var(--ed-border);
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-          border-radius: 9999px;
-          padding: 4px 12px;
-          font-size: 10px;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 6px;
+          width: fit-content;
+          margin: 30px auto 40px;
         }
 
         .ed-circular-frame {
@@ -845,19 +833,21 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
           margin: 0 auto;
           border-radius: 50%;
           overflow: hidden;
-          border: 2px solid var(--ed-dark);
-          box-shadow: 0 0 0 8px #fcfbfa, 0 16px 36px -8px rgba(0, 0, 0, 0.09);
+          border: 2.5px solid var(--ed-dark);
+          box-shadow: 0 0 0 8px #fcfbfa, 0 16px 36px -8px rgba(0, 0, 0, 0.12);
           background: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 20px;
+          padding: 0;
         }
 
         .ed-circular-img {
           width: 100%;
           height: 100%;
-          object-fit: contain;
+          object-fit: cover;
+          object-position: center;
+          display: block;
           transition: transform 0.4s ease;
         }
 
@@ -865,38 +855,40 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
           transform: scale(1.05);
         }
 
-        .ed-floating-badge-bottom {
+        .ed-photo-socials-centered {
           position: absolute;
-          bottom: -10px;
-          right: 0px;
+          bottom: -14px;
+          left: 50%;
+          transform: translateX(-50%);
           z-index: 10;
           display: flex;
-          gap: 6px;
+          align-items: center;
+          gap: 8px;
           background: #ffffff;
-          padding: 4px 8px;
+          padding: 6px 14px;
           border-radius: 9999px;
           border: 1px solid var(--ed-border);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         }
 
-        .ed-floating-badge-bottom a {
-          width: 24px;
-          height: 24px;
+        .ed-social-icon-btn {
+          width: 30px;
+          height: 30px;
           border-radius: 50%;
           background: #f7f7f5;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 10px;
-          font-weight: 700;
           color: var(--ed-dark);
           text-decoration: none;
-          transition: background 0.2s ease;
+          transition: all 0.2s ease;
         }
 
-        .ed-floating-badge-bottom a:hover {
+        .ed-social-icon-btn:hover {
           background: var(--ed-dark);
-          color: #fff;
+          color: #ffffff;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         /* Bio snippet */
