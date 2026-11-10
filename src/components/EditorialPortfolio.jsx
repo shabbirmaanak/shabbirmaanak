@@ -7,7 +7,7 @@ import {
 import logoImg from '../assets/logo.jpg';
 import { submitContactMessage } from '../data/portfolioData';
 
-export default function EditorialPortfolio({ data, onSelectProject, onOpenResume }) {
+export default function EditorialPortfolio({ data, onSelectProject, onOpenResume, onOpenBrandGuidelines }) {
   const personalInfo = data?.personalInfo || {};
   const aboutStats = data?.aboutStats || [];
   const skills = data?.skills || [];
@@ -82,6 +82,14 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
               >
                 Curriculum Vitae
               </button>
+              <button 
+                type="button" 
+                onClick={onOpenBrandGuidelines}
+                className="ed-nav-link ed-resume-trigger"
+                title="View Official Brand Identity & Stationery Architecture"
+              >
+                Brand Manual
+              </button>
             </nav>
 
             <a href="#contact" className="ed-cta-link">
@@ -114,6 +122,14 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
             >
               <FileText size={14} />
               <span>Curriculum Vitae</span>
+            </button>
+            <button 
+              type="button" 
+              onClick={() => { setMobileMenuOpen(false); onOpenBrandGuidelines(); }}
+              className="ed-mobile-cv-btn"
+            >
+              <Award size={14} />
+              <span>Brand Guidelines &amp; Stationery</span>
             </button>
             <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="ed-mobile-cta">
               Initiate Collaboration

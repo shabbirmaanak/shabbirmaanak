@@ -10,6 +10,7 @@ import ProjectModal from './components/ProjectModal';
 import ResumeModal from './components/ResumeModal';
 import AdminDashboard from './components/admin/AdminDashboard';
 import EditorialPortfolio from './components/EditorialPortfolio';
+import BrandGuidelinesPage from './components/BrandGuidelinesPage';
 import { getStoredPortfolioData, fetchPortfolioData } from './data/portfolioData';
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isBrandGuidelinesOpen, setIsBrandGuidelinesOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [layoutMode, setLayoutMode] = useState('editorial'); // 'editorial' | 'classic'
 
@@ -41,25 +43,30 @@ export default function App() {
 
   // Check URL hash/query on load and when URL changes
   useEffect(() => {
-    const checkAdminRoute = () => {
+    const checkRoutes = () => {
       const hash = window.location.hash.toLowerCase();
       const search = window.location.search.toLowerCase();
       const pathname = window.location.pathname.toLowerCase();
 
       if (hash.includes('admin') || search.includes('admin') || pathname.includes('admin')) {
         setIsAdmin(true);
+        setIsBrandGuidelinesOpen(false);
+      } else if (hash.includes('brand') || search.includes('brand') || hash.includes('guidelines') || hash.includes('stationery')) {
+        setIsAdmin(false);
+        setIsBrandGuidelinesOpen(true);
       } else {
         setIsAdmin(false);
+        setIsBrandGuidelinesOpen(false);
       }
     };
 
-    checkAdminRoute();
-    window.addEventListener('hashchange', checkAdminRoute);
-    window.addEventListener('popstate', checkAdminRoute);
+    checkRoutes();
+    window.addEventListener('hashchange', checkRoutes);
+    window.addEventListener('popstate', checkRoutes);
 
     return () => {
-      window.removeEventListener('hashchange', checkAdminRoute);
-      window.removeEventListener('popstate', checkAdminRoute);
+      window.removeEventListener('hashchange', checkRoutes);
+      window.removeEventListener('popstate', checkRoutes);
     };
   }, []);
 
@@ -71,6 +78,19 @@ export default function App() {
     setIsAdmin(false);
   };
 
+  const handleOpenBrandGuidelines = () => {
+    window.location.hash = 'brand';
+    setIsBrandGuidelinesOpen(true);
+  };
+
+  const handleExitBrandGuidelines = () => {
+    window.location.hash = '';
+    if (window.history && window.history.pushState && (window.location.hash.includes('brand') || window.location.pathname.includes('brand'))) {
+      window.history.pushState('', document.title, '/');
+    }
+    setIsBrandGuidelinesOpen(false);
+  };
+
   // If in Admin Mode (triggered ONLY by URL #admin), render the CMS Dashboard
   if (isAdmin) {
     return (
@@ -78,6 +98,15 @@ export default function App() {
         data={data}
         onUpdateData={(newData) => setData(newData)}
         onExitAdmin={handleExitAdmin}
+      />
+    );
+  }
+
+  // If viewing Official Brand Guidelines & Executive Stationery System
+  if (isBrandGuidelinesOpen) {
+    return (
+      <BrandGuidelinesPage 
+        onBackToPortfolio={handleExitBrandGuidelines}
       />
     );
   }
@@ -128,6 +157,7 @@ export default function App() {
           data={data}
           onSelectProject={(project) => setSelectedProject(project)}
           onOpenResume={() => setIsResumeOpen(true)}
+          onOpenBrandGuidelines={handleOpenBrandGuidelines}
         />
       ) : (
         <div className="vcard-app-container">
@@ -162,8 +192,20 @@ export default function App() {
         </div>
       )}
 
-      {/* Floating Theme / Layout Switcher */}
+      {/* Floating Theme & Brand Guidelines Switchers */}
       <aside className="layout-mode-switcher" aria-label="Layout Theme Switcher">
+        <button
+          type="button"
+          onClick={handleOpenBrandGuidelines}
+          className="switcher-brand-pill"
+          title="Open Official Brand Identity Guidelines & Executive Stationery System"
+        >
+          <span className="switcher-icon">📜</span>
+          <span className="switcher-label">
+            Brand: <strong>Guidelines &amp; Stationery</strong>
+          </span>
+        </button>
+
         <button
           type="button"
           onClick={() => setLayoutMode(layoutMode === 'editorial' ? 'classic' : 'editorial')}
@@ -172,9 +214,8 @@ export default function App() {
         >
           <span className="switcher-icon">{layoutMode === 'editorial' ? '✨' : '🌙'}</span>
           <span className="switcher-label">
-            Theme: <strong>{layoutMode === 'editorial' ? 'Editorial Luxury' : 'Classic Dark'}</strong>
+            Theme: <strong>{layoutMode === 'editorial' ? 'Editorial' : 'Classic'}</strong>
           </span>
-          <span className="switcher-hint">(Click to compare)</span>
         </button>
 
         <style>{`
@@ -183,40 +224,59 @@ export default function App() {
             bottom: 20px;
             right: 20px;
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+          }
+          .switcher-brand-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #ffffff;
+            color: #111111;
+            border: 1px solid #A37E2C;
+            border-radius: 9999px;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(163, 126, 44, 0.25);
+            transition: all 0.2s ease;
+          }
+          .switcher-brand-pill:hover {
+            transform: translateY(-2px);
+            background: #FAF9F6;
+            box-shadow: 0 6px 22px rgba(163, 126, 44, 0.4);
+          }
+          .switcher-brand-pill strong {
+            color: #A37E2C;
           }
           .switcher-toggle-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
+            padding: 7px 14px;
             background: #11141a;
             color: #ffffff;
             border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 9999px;
-            font-size: 12px;
+            font-size: 11.5px;
             cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
             transition: all 0.2s ease;
           }
           .switcher-toggle-pill:hover {
             transform: translateY(-2px);
             border-color: #d4af37;
-            box-shadow: 0 10px 28px rgba(212, 175, 55, 0.3);
           }
-          .switcher-label strong {
+          .switcher-toggle-pill strong {
             color: #fcd34d;
-          }
-          .switcher-hint {
-            font-size: 10px;
-            color: #94a3b8;
           }
           @media (max-width: 640px) {
             .layout-mode-switcher {
-              bottom: 15px;
-              right: 15px;
-            }
-            .switcher-hint {
-              display: none;
+              bottom: 12px;
+              right: 12px;
+              gap: 8px;
             }
           }
         `}</style>
