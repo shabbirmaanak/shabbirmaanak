@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Mail, Phone, MapPin, ExternalLink, Sparkles, CheckCircle2, 
   Send, Loader2, ArrowUpRight, Menu, X, FileText, Briefcase, 
-  GraduationCap, Award, Zap, Linkedin, Instagram, Github
+  GraduationCap, Award, Zap, Linkedin, Instagram, Github, Eye
 } from 'lucide-react';
 import logoImg from '../assets/logo.jpg';
 import { submitContactMessage } from '../data/portfolioData';
@@ -386,12 +386,17 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
                         title="Open hyperlinked project"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Zap size={22} className="ed-center-icon" />
+                        <Eye size={22} className="ed-center-icon" />
                       </a>
                     ) : (
-                      <div className="ed-center-eye-link">
-                        <Sparkles size={20} className="ed-center-icon" />
-                      </div>
+                      <button
+                        type="button"
+                        className="ed-center-eye-link"
+                        title="View Case Study"
+                        onClick={() => onSelectProject(proj)}
+                      >
+                        <Eye size={22} className="ed-center-icon" />
+                      </button>
                     )}
                   </div>
 
@@ -1339,20 +1344,23 @@ export default function EditorialPortfolio({ data, onSelectProject, onOpenResume
           width: 52px;
           height: 52px;
           border-radius: 16px;
-          background: linear-gradient(135deg, #fcd34d 0%, #d4af37 100%);
+          border: none;
+          outline: none;
+          cursor: pointer;
+          background: linear-gradient(135deg, #fcd34d 0%, #f43f5e 100%);
           color: #121212;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 8px 22px rgba(244, 63, 94, 0.35);
+          transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
           z-index: 5;
           text-decoration: none;
         }
 
         .ed-center-eye-link:hover {
           transform: scale(1.12);
-          box-shadow: 0 8px 26px rgba(212, 175, 55, 0.6);
+          box-shadow: 0 10px 28px rgba(244, 63, 94, 0.55);
         }
 
         .ed-project-info {
